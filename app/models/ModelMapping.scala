@@ -75,4 +75,5 @@ trait DatabaseSchema {
 
     val purchases = TableQuery[Purchases]
 
+    val allSchemas = persons.schema ++ households.schema ++ personsHouseholds.schema ++ shoppingLists.schema ++ shoppingListItems.schema ++ purchases.schema
 }
