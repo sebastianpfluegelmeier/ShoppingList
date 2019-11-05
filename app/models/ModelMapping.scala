@@ -24,13 +24,16 @@ trait DatabaseSchema {
     val households = TableQuery[Households]
 
     class PersonsHouseholds(tag: Tag) extends Table[PersonHousehold](tag, "PERSON_HOUSEHOLD") {
-        def personId = column[Long]("PERSON_ID", O.PrimaryKey)
+        def id = column[Long]("ID", O.PrimaryKey)
+
+
+        def personId = column[Long]("PERSON_ID")
         def person = foreignKey("FK_PERSON_ID", personId, persons)(_.id)
 
-        def householdId = column[Long]("HOUSEHOLD_ID", O.PrimaryKey)
+        def householdId = column[Long]("HOUSEHOLD_ID")
         def household = foreignKey("FK_HOUSEHOLD_ID", householdId, households)(_.id)
 
-        def * = (personId, householdId) <> (PersonHousehold.tupled, PersonHousehold.unapply)
+        def * = (id, personId, householdId) <> (PersonHousehold.tupled, PersonHousehold.unapply)
     }
 
     val personsHouseholds = TableQuery[PersonsHouseholds]
