@@ -1,5 +1,10 @@
 package controllers
 
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
+import play.api.libs.typedmap.TypedKey
+import play.api.i18n._
 import javax.inject._
 import play.api._
 import play.api.mvc._
@@ -14,9 +19,11 @@ import slick.jdbc.meta.MTable
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with DatabaseSchema {
+class HomeController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) with DatabaseSchema with play.api.i18n.I18nSupport {
 
   val db = Database.forConfig("h2")
+
+  private val postUrl = routes.HomeController.createUser()
 
   def setup() = Action { implicit request: Request[AnyContent] => 
 
@@ -45,14 +52,69 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   def index() = Action { implicit request: Request[AnyContent] =>
 
-    setup()
 
     val q = persons.map(_.name)
     val action = q.result
     val result: scala.concurrent.Future[Seq[String]] = db.run(action)
     val person = scala.concurrent.Await.result(result, Duration.Inf)
 
-    println(person)
     Ok(views.html.index(person))
   }
+
+  def users() = Action { implicit request: MessagesRequest[AnyContent] => 
+
+    val q = persons.map(p => (p.id, p.name, p.password))
+    val action = q.result
+    val result: scala.concurrent.Future[Seq[(Long, String, String)]] = db.run(action)
+    val personsList = scala.concurrent.Await.result(result, Duration.Inf).map(p => Person.apply(p._1, p._2, p._3))
+
+
+    Ok(views.html.newPerson(personsList, userForm, postUrl))
+  }
+
+  def deleteUser() = Action { implicit request: MessagesRequest[AnyContent] => 
+
+    val errorFunction = { formWithErrors: Form[Person] => 
+      val q = persons.map(p => (p.id, p.name, p.password))
+      val action = q.result
+      val result: scala.concurrent.Future[Seq[(Long, String, String)]] = db.run(action)
+      val personsList = scala.concurrent.Await.result(result, Duration.Inf).map(p => Person.apply(p._1, p._2, p._3))
+      BadRequest(views.html.newPerson(personsList, userForm, postUrl))
+    }
+
+    val successFunction = { person: Person => 
+      var idToDelete = person.id
+      scala.concurrent.Await.result(db.run(persons.filter(p => p.id === idToDelete).delete), Duration.Inf)
+      Redirect(routes.HomeController.index())
+    }
+
+    userForm.bindFromRequest.fold(errorFunction, successFunction)
+  }
+
+  def createUser() = Action { implicit request: MessagesRequest[AnyContent] => 
+
+    val errorFunction = { formWithErrors: Form[Person] =>
+      val q = persons.map(p => (p.id, p.name, p.password))
+      val action = q.result
+      val result: scala.concurrent.Future[Seq[(Long, String, String)]] = db.run(action)
+      val personsList = scala.concurrent.Await.result(result, Duration.Inf).map(p => Person.apply(p._1, p._2, p._3))
+      BadRequest(views.html.newPerson(personsList, userForm, postUrl))
+    }
+
+    val successFunction = { person: Person =>
+      scala.concurrent.Await.result(db.run(persons += person), Duration.Inf)
+      Redirect(routes.HomeController.users())//.flashing("info" -> "Person added!")
+    }
+
+    val formValidationResult = userForm.bindFromRequest
+    formValidationResult.fold(errorFunction, successFunction)
+  }
+
+  val userForm = Form(
+    mapping(
+      "id" -> longNumber,
+      "name" -> text,
+      "password"  -> text
+    )(Person.apply)(Person.unapply)
+  )
 }
