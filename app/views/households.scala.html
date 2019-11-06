@@ -1,6 +1,6 @@
 @(username: Option[String], households: Seq[Household])(implicit requestHeader: RequestHeader)
 
-@main("Login") {
+@main("Households") {
 
     @navbar(username)
 
@@ -8,7 +8,7 @@
     <h3> my households </h3>
     <div>
         @for(household <- households) {
-            @(household.name)
+            <a href="/household/@(household.id)" >@(household.name)</a>
             <br>
         }
     </div>

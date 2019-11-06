@@ -46,6 +46,13 @@ class Dao extends DatabaseSchema {
     )(0)
   }
 
+  def getPerson(name: String): Person = {
+    scala.concurrent.Await.result(
+        db.run(persons.filter(p => p.name === name).result)
+        , Duration.Inf
+    )(0)
+  }
+
   def getAllPersons(): Seq[Person] = {
     scala.concurrent.Await.result(
         db.run(persons.result)
@@ -59,6 +66,37 @@ class Dao extends DatabaseSchema {
       , Duration.Inf
     )
     runDbOperation(personsHouseholds += PersonHousehold(personId, householdId))
+  }
+
+  def addPersonToHousehold(householdId: Long, personName: String) = {
+    val personAlreadyInHousehold = scala.concurrent.Await.result(
+      db.run(
+          (for {
+            ph <- personsHouseholds if ph.householdId === householdId
+            p <- persons if p.id === ph.personId && p.name === personName
+          } yield ph).result)
+      , Duration.Inf
+    ).length > 0
+    if (!personAlreadyInHousehold) {
+      val personId: Option[Long] = scala.concurrent.Await.result(
+        db.run(persons.filter(p => p.name === personName).result)
+        , Duration.Inf
+      )(0).id
+      runDbOperation(personsHouseholds += PersonHousehold(personId.get, householdId))
+    }
+  }
+
+  def getPeopleFromHousehold(householdId: Long): Seq[Person] = {
+    scala.concurrent.Await.result(
+        db.run(
+          (for {
+            ph <- personsHouseholds if ph.householdId === householdId
+            p <- persons if p.id === ph.personId
+          } yield p)
+          .result
+          )
+        , Duration.Inf
+    )
   }
 
   def removeHousehold(id: Long) = {
