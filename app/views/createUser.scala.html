@@ -1,0 +1,12 @@
+@()
+
+@main("Create new User") {
+    <h2> create user </h2>
+    <form action="/createUser" method="post">
+        Name: <input type="text" name="name"></input>
+        <br>
+        Password: <input type="password" name="password"></input>
+        <br>
+        <input type="submit" value="Create new user"></input>
+    </form>
+}
