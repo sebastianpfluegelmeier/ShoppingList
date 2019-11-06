@@ -1,14 +1,23 @@
-@()
+@(username: Option[String], wrongPassword: Boolean)(implicit requestHeader: RequestHeader)
 
 @main("Login") {
 
+    @navbar(username)
+
     <h2>Login</h2>
-    <form action="/login" method="post">
-        Name: <input type="text" name="name"></input>
-        <br>
-        Password: <input type="password" name="password"></input>
-        <br>
-        <input type="submit" value="Login"></input>
-    </form>
+        <form action="@routes.LoginController.loginAction()" method="post">
+            <div class="form-group">
+                <label class="from-label">name</label>
+                <input type="text" class="form-input" name="name"></input>
+                <label class="form-label">password</label>
+                <input type="password" class="form-input" name="password"></input>
+                <br>
+                <button type="submit" value="login" class="btn"> login </button>
+            </div>
+            @helper.CSRF.formField
+        </form>
+    @if(wrongPassword) {
+        <div class="toast toast-error"> user or password is unknown </div>
+    }
     
 }

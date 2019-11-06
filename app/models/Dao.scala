@@ -54,14 +54,29 @@ class Dao extends DatabaseSchema {
   }
 
   def newHousehold(household: Household, personId: Long) = {
-      runDbOperation(households += household)
-      val householdId = household.id.get
-      runDbOperation(personsHouseholds += PersonHousehold(personId, householdId))
+    val householdId = scala.concurrent.Await.result(
+      db.run((households returning households.map(_.id)) += household)
+      , Duration.Inf
+    )
+    runDbOperation(personsHouseholds += PersonHousehold(personId, householdId))
   }
 
   def removeHousehold(id: Long) = {
       runDbOperation(households.filter(h => h.id === id).delete)
       runDbOperation(personsHouseholds.filter(ph => ph.householdId === id).delete)
+  }
+
+  def getHouseholds(personId: Long): Seq[Household] = {
+    scala.concurrent.Await.result(
+        db.run(
+          (for {
+            ph <- personsHouseholds if ph.personId === personId
+            h <- households if h.id === ph.householdId
+          } yield h)
+          .result
+          )
+        , Duration.Inf
+    )
   }
 
   def getHousehold(id: Long): Household = {

@@ -1,14 +1,10 @@
 @(username: Option[String])
 
+
 @main("Welcome to Shoppinglist") {
   
+  @navbar(username)
+
   <h1>Welcome to Shoppinglist</h1>
-  <a href="/login">login</a>
-  <br>
-  <a href="/createUser">create user</a>
-  <br>
-  @(username match {
-    case Some(un: String) => "Welcome " + un + "!"
-    case None => ""
-  })
+
 }

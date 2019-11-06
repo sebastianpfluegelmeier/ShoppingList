@@ -11,6 +11,10 @@ POST    /createUser controllers.CreateUserController.createUser
 
 GET     /login      controllers.LoginController.loginForm
 POST    /login      controllers.LoginController.loginAction
+GET     /logout     controllers.LoginController.logoutAction
+
+GET     /households controllers.HouseholdsController.index
+POST    /household  controllers.HouseholdsController.householdPost
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

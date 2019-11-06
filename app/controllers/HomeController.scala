@@ -28,7 +28,6 @@ class HomeController @Inject()(cc: MessagesControllerComponents) extends Message
   }
 
   def index() = Action { implicit request: Request[AnyContent] =>
-
     var username = request.session.get("userName")
     Ok(views.html.index(username))
   }

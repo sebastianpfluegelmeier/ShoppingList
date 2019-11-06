@@ -14,7 +14,8 @@ class CreateUserController @Inject()(cc: MessagesControllerComponents) extends M
   def dao = new Dao
 
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.createUser())
+    val username = request.session.data.get("userName")
+    Ok(views.html.createUser(username))
   }
 
   def createUser() = Action { implicit request: Request[AnyContent] =>

@@ -1,0 +1,41 @@
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.wrongPassword {
+    color: red;
+}
+
+h1 {
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h2 {
+    font-family: 'Open Sans', sans-serif;
+    margin: 10px;
+    padding: 10px;
+}
+
+h3 {
+    font-family: 'Open Sans', sans-serif;
+    margin: 10px;
+    padding: 10px;
+}
+
+div {
+    margin: 10px;
+    padding: 10px;
+}
+
+.box {
+    border-style: solid;
+    border-color: lightgrey;
+    box-shadow: 2px 2px 4px rgba(0,0,0 , 0.04);
+    width: 42%;
+    margin: 5px;
+    padding: 5px;
+    border-width:0.01px;
+}

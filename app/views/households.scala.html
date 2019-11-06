@@ -1,0 +1,25 @@
+@(username: Option[String], households: Seq[Household])(implicit requestHeader: RequestHeader)
+
+@main("Login") {
+
+    @navbar(username)
+
+    <h2>households</h2>
+    <h3> my households </h3>
+    <div>
+        @for(household <- households) {
+            @(household.name)
+            <br>
+        }
+    </div>
+    <h3> new household </h3>
+    <form action="@routes.HouseholdsController.householdPost()" method="post">
+        <div class="form-group">
+            <label class="from-label">name</label>
+            <input type="text" class="form-input" name="name"></input>
+            <br>
+            <button type="submit" value="Create new household" class="btn"> create new household </button>
+        </div>
+        @helper.CSRF.formField
+    </form>
+}
