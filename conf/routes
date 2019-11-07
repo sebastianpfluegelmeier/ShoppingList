@@ -3,20 +3,22 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-# An example controller showing a sample home page
-GET     /           controllers.HomeController.index
-GET     /setup      controllers.HomeController.setup
-GET     /createUser controllers.CreateUserController.index
-POST    /createUser controllers.CreateUserController.createUser
+GET     /                                 controllers.HomeController.index
+GET     /setup                            controllers.HomeController.setup
+GET     /createUser                       controllers.CreateUserController.index
+POST    /createUser                       controllers.CreateUserController.createUser
 
-GET     /login      controllers.LoginController.loginForm
-POST    /login      controllers.LoginController.loginAction
-GET     /logout     controllers.LoginController.logoutAction
+GET     /login                            controllers.LoginController.loginForm
+POST    /login                            controllers.LoginController.loginAction
+GET     /logout                           controllers.LoginController.logoutAction
 
-GET     /households controllers.HouseholdsController.index
-POST    /household  controllers.HouseholdsController.householdPost
-GET     /household/:id  controllers.HouseholdsController.household(id)
-POST    /addPersonToHousehold controllers.HouseholdsController.addPerson
+GET     /households                       controllers.HouseholdController.index
+POST    /household                        controllers.HouseholdController.householdPost
+GET     /household/:id                    controllers.HouseholdController.household(id)
+POST    /addPersonToHousehold             controllers.HouseholdController.addPersonToHousehold
+POST    /removePersonFromHousehold        controllers.HouseholdController.removePersonFromHousehold
+
+GET     /newShoppingList/:householdId     controllers.ShoppingListController.newShoppinglist(householdId)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -9,7 +9,7 @@ import play.api.libs.typedmap.{TypedKey, TypedMap}
 
 
 @Singleton
-class HouseholdsController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
+class HouseholdController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
 
   def dao = new Dao
 
@@ -29,17 +29,31 @@ class HouseholdsController @Inject()(cc: MessagesControllerComponents) extends M
 
     val household = dao.getHousehold(id.toLong)
     val people = dao.getPeopleFromHousehold(id.toLong)
+    val shoppinglists = dao.getShoppinglistsFromHousehold(id.toLong)
 
-    Ok(views.html.household(request.session.data.get("userName"), household, people))
+    Ok(views.html.household(request.session.data.get("userName"), household, people, shoppinglists))
   }
 
-  def addPerson() = Action { implicit request: Request[AnyContent] => 
+  def addPersonToHousehold() = Action { implicit request: Request[AnyContent] => 
     val name = request.body.asFormUrlEncoded.map(_.get("name").map(_(0))).flatten
     val householdId = request.body.asFormUrlEncoded.map(_.get("householdId").map(_(0))).flatten.map(id => id.toLong)
     for {
       h <- householdId
       n <- name
     } yield (dao.addPersonToHousehold(h, n))
+    householdId match {
+      case Some(h: Long) => Redirect("household/" + householdId.get)
+      case other => Redirect("households")
+    }
+  }
+
+  def removePersonFromHousehold() = Action { implicit request: Request[AnyContent] => 
+    val personId = request.body.asFormUrlEncoded.map(_.get("personId").map(_(0))).flatten.map(id => id.toLong)
+    val householdId = request.body.asFormUrlEncoded.map(_.get("householdId").map(_(0))).flatten.map(id => id.toLong)
+    for {
+      h <- householdId
+      p <- personId
+    } yield (dao.removePersonFromHousehold(h, p))
     householdId match {
       case Some(h: Long) => Redirect("household/" + householdId.get)
       case other => Redirect("households")

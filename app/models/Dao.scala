@@ -86,6 +86,10 @@ class Dao extends DatabaseSchema {
     }
   }
 
+  def removePersonFromHousehold(householdId: Long, personId: Long) = {
+    runDbOperation(personsHouseholds.filter(ph => ph.personId === personId && ph.householdId === householdId).delete)
+  }
+
   def getPeopleFromHousehold(householdId: Long): Seq[Person] = {
     scala.concurrent.Await.result(
         db.run(
@@ -95,6 +99,13 @@ class Dao extends DatabaseSchema {
           } yield p)
           .result
           )
+        , Duration.Inf
+    )
+  }
+
+  def getShoppinglistsFromHousehold(householdId: Long): Seq[ShoppingList] = {
+    scala.concurrent.Await.result(
+        db.run(shoppingLists.filter(s => s.householdId === householdId).result)
         , Duration.Inf
     )
   }

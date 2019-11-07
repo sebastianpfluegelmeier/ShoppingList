@@ -11,9 +11,13 @@
             <a href="/household/@(household.id)" >@(household.name)</a>
             <br>
         }
+
+        @if(households.length < 1) {
+            you have no households yet
+        }
     </div>
     <h3> new household </h3>
-    <form action="@routes.HouseholdsController.householdPost()" method="post">
+    <form action="@routes.HouseholdController.householdPost()" method="post">
         <div class="form-group">
             <label class="from-label">name</label>
             <input type="text" class="form-input" name="name"></input>

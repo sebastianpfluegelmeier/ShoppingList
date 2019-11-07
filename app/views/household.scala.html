@@ -1,19 +1,38 @@
-@(username: Option[String], household: Household, people: Seq[Person])(implicit requestHeader: RequestHeader)
+@(username: Option[String], household: Household, people: Seq[Person], shoppinglists: Seq[ShoppingList])(implicit requestHeader: RequestHeader)
 
 @main("Household") {
 
     @navbar(username)
 
     <h2>@(household.name)</h2>
+
+    <h3> shoppinglists </h3>
+
+    <div>
+        @for(shoppinglist <- shoppinglists) {
+            <a href="/shoppinglist/@(shoppinglist.id)">@(shoppinglist.name)</a>
+        }
+    </div>
+
+    <a href="/newShoppinglist/@(household.id)"> new shoppinglist </a>
+
+
     <h3> people </h3>
     <div>
         @for(person <- people) {
-            @(person.name)
+            <form action="@routes.HouseholdController.removePersonFromHousehold()" method="post">
+                @(person.name)
+                <input type="hidden" name="householdId" value="@(household.id)"></input>
+                <input type="hidden" name="personId" value="@(person.id)"></input>
+                <button type="submit" value="remove" class="btn"> remove </button>
+                @helper.CSRF.formField
+            </form>
             <br>
         }
     </div>
+
     <h3> add person </h3>
-    <form action="@routes.HouseholdsController.addPerson()" method="post">
+    <form action="@routes.HouseholdController.addPersonToHousehold()" method="post">
         <div class="form-group">
             <label class="from-label">name</label>
             <input type="text" class="form-input" name="name"></input>
