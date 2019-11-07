@@ -18,7 +18,8 @@ GET     /household/:id                    controllers.HouseholdController.househ
 POST    /addPersonToHousehold             controllers.HouseholdController.addPersonToHousehold
 POST    /removePersonFromHousehold        controllers.HouseholdController.removePersonFromHousehold
 
-GET     /newShoppingList/:householdId     controllers.ShoppingListController.newShoppinglist(householdId)
+GET     /newShoppingList/:householdId     controllers.ShoppingListController.newShoppingList(householdId)
+GET     /shoppingListJson/:shoppingListId controllers.ShoppingListController.getShoppingList(shoppingListId)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

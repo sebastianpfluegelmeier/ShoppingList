@@ -110,6 +110,31 @@ class Dao extends DatabaseSchema {
     )
   }
 
+  def newShoppingList(householdId: Long): Long = {
+    scala.concurrent.Await.result(
+        db.run((shoppingLists returning shoppingLists.map(_.id)) += ShoppingList(None, "new shoppinglist", householdId))
+        , Duration.Inf
+    )
+  }
+
+  def getShoppingList(shoppingListId: Long): (ShoppingList, Seq[ShoppingListItem]) = {
+
+    val shoppingListItemsList = scala.concurrent.Await.result(
+        db.run(shoppingListItems.filter(sli => sli.shoppingListId === shoppingListId).result)
+        , Duration.Inf
+      )
+
+
+    val shoppingList = scala.concurrent.Await.result(
+        db.run(shoppingLists.filter(sl => sl.id === shoppingListId).result)
+        , Duration.Inf
+      )(0)
+
+    
+    (shoppingList, shoppingListItemsList)
+
+  }
+
   def removeHousehold(id: Long) = {
       runDbOperation(households.filter(h => h.id === id).delete)
       runDbOperation(personsHouseholds.filter(ph => ph.householdId === id).delete)
