@@ -6,7 +6,7 @@ case class Household(id: Option[Long], name: String)
 
 case class PersonHousehold(personId: Long, householdId: Long)
 
-case class ShoppingList(id: Option[Long], name: String, householdId: Long)
+case class ShoppingList(id: Option[Long], name: String, householdId: Long, disabled: Boolean)
 
 case class ShoppingListItem(id: Option[Long], shoppingListId: Long, name: String, purchaseId: Option[Long])
 

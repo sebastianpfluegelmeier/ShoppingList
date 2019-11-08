@@ -4529,9 +4529,9 @@ var author$project$Main$Item = F3(
 	function (id, purchaseId, name) {
 		return {id: id, name: name, purchaseId: purchaseId};
 	});
-var author$project$Main$ShoppingList = F4(
-	function (name, id, householdId, list) {
-		return {householdId: householdId, id: id, list: list, name: name};
+var author$project$Main$ShoppingList = F5(
+	function (name, id, householdId, list, disabled) {
+		return {disabled: disabled, householdId: householdId, id: id, list: list, name: name};
 	});
 var elm$core$Array$branchFactor = 32;
 var elm$core$Array$Array_elm_builtin = F4(
@@ -5009,10 +5009,11 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 		}
 	});
 var elm$json$Json$Decode$array = _Json_decodeArray;
+var elm$json$Json$Decode$bool = _Json_decodeBool;
 var elm$json$Json$Decode$field = _Json_decodeField;
 var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$map3 = _Json_map3;
-var elm$json$Json$Decode$map4 = _Json_map4;
+var elm$json$Json$Decode$map5 = _Json_map5;
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$json$Json$Decode$null = _Json_decodeNull;
 var elm$json$Json$Decode$oneOf = _Json_oneOf;
@@ -5025,8 +5026,8 @@ var elm$json$Json$Decode$nullable = function (decoder) {
 			]));
 };
 var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$Main$shoppingListDecoder = A5(
-	elm$json$Json$Decode$map4,
+var author$project$Main$shoppingListDecoder = A6(
+	elm$json$Json$Decode$map5,
 	author$project$Main$ShoppingList,
 	A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$int),
@@ -5043,7 +5044,8 @@ var author$project$Main$shoppingListDecoder = A5(
 					elm$json$Json$Decode$field,
 					'purchaseId',
 					elm$json$Json$Decode$nullable(elm$json$Json$Decode$int)),
-				A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string)))));
+				A2(elm$json$Json$Decode$field, 'name', elm$json$Json$Decode$string)))),
+	A2(elm$json$Json$Decode$field, 'disabled', elm$json$Json$Decode$bool));
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -5933,7 +5935,7 @@ var elm$http$Http$get = function (r) {
 };
 var author$project$Main$init = function (id) {
 	return _Utils_Tuple2(
-		{error: elm$core$Maybe$Nothing, householdId: -1, id: id, list: elm$core$Array$empty, name: ''},
+		{disabled: false, error: elm$core$Maybe$Nothing, householdId: -1, id: id, list: elm$core$Array$empty, name: ''},
 		elm$http$Http$get(
 			{
 				expect: A2(elm$http$Http$expectJson, author$project$Main$GotShoppingList, author$project$Main$shoppingListDecoder),
@@ -5983,6 +5985,7 @@ var elm$json$Json$Encode$array = F2(
 				_Json_emptyArray(_Utils_Tuple0),
 				entries));
 	});
+var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
@@ -6054,7 +6057,10 @@ var author$project$Main$shoppingListEncoder = function (shoppingList) {
 				elm$json$Json$Encode$int(shoppingList.id)),
 				_Utils_Tuple2(
 				'householdId',
-				elm$json$Json$Encode$int(shoppingList.householdId))
+				elm$json$Json$Encode$int(shoppingList.householdId)),
+				_Utils_Tuple2(
+				'disabled',
+				elm$json$Json$Encode$bool(shoppingList.disabled))
 			]));
 };
 var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
@@ -6668,7 +6674,7 @@ var author$project$Main$update = F2(
 						{
 							body: elm$http$Http$jsonBody(
 								author$project$Main$shoppingListEncoder(
-									{householdId: model.householdId, id: model.id, list: model.list, name: model.name})),
+									{disabled: model.disabled, householdId: model.householdId, id: model.id, list: model.list, name: model.name})),
 							expect: elm$http$Http$expectWhatever(author$project$Main$Ignore),
 							url: elm$core$String$concat(
 								_List_fromArray(

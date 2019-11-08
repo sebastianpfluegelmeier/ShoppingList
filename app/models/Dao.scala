@@ -112,7 +112,7 @@ class Dao extends DatabaseSchema {
 
   def newShoppingList(householdId: Long): Long = {
     scala.concurrent.Await.result(
-        db.run((shoppingLists returning shoppingLists.map(_.id)) += ShoppingList(None, "new shoppinglist", householdId))
+        db.run((shoppingLists returning shoppingLists.map(_.id)) += ShoppingList(None, "new shoppinglist", householdId, false))
         , Duration.Inf
     )
   }
@@ -163,6 +163,13 @@ class Dao extends DatabaseSchema {
         db.run(households.filter(h => h.id === id).result)
         , Duration.Inf
     )(0)
+  }
+
+  def disableShoppingList(id: Long) = {
+    runDbOperation(
+      (for {
+        s <- shoppingLists if s.id === id
+      } yield (s.disabled)).update(true))
   }
 
   /*

@@ -3,27 +3,28 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-GET     /                                 controllers.HomeController.index
-GET     /setup                            controllers.HomeController.setup
-GET     /createUser                       controllers.CreateUserController.index
-POST    /createUser                       controllers.CreateUserController.createUser
+GET     /                                       controllers.HomeController.index
+GET     /setup                                  controllers.HomeController.setup
+GET     /createUser                             controllers.CreateUserController.index
+POST    /createUser                             controllers.CreateUserController.createUser
 
-GET     /login                            controllers.LoginController.loginForm
-POST    /login                            controllers.LoginController.loginAction
-GET     /logout                           controllers.LoginController.logoutAction
+GET     /login                                  controllers.LoginController.loginForm
+POST    /login                                  controllers.LoginController.loginAction
+GET     /logout                                 controllers.LoginController.logoutAction
 
-GET     /households                       controllers.HouseholdController.index
-POST    /household                        controllers.HouseholdController.householdPost
-GET     /household/:id                    controllers.HouseholdController.household(id)
-POST    /addPersonToHousehold             controllers.HouseholdController.addPersonToHousehold
-POST    /removePersonFromHousehold        controllers.HouseholdController.removePersonFromHousehold
+GET     /households                             controllers.HouseholdController.index
+POST    /household                              controllers.HouseholdController.householdPost
+GET     /household/:id                          controllers.HouseholdController.household(id)
+POST    /addPersonToHousehold                   controllers.HouseholdController.addPersonToHousehold
+POST    /removePersonFromHousehold              controllers.HouseholdController.removePersonFromHousehold
 
-GET     /newShoppingList/:householdId     controllers.ShoppingListController.newShoppingList(householdId)
-GET     /shoppingListJson/:shoppingListId controllers.ShoppingListController.getShoppingListJson(shoppingListId)
-GET     /shoppingList/:shoppingListId     controllers.ShoppingListController.getShoppingList(shoppingListId)
+GET     /newShoppingList/:householdId           controllers.ShoppingListController.newShoppingList(householdId)
+GET     /shoppingListJson/:shoppingListId       controllers.ShoppingListController.getShoppingListJson(shoppingListId)
+GET     /shoppingList/:shoppingListId           controllers.ShoppingListController.getShoppingList(shoppingListId)
+POST    /deleteShoppingList/:shoppingListId     controllers.ShoppingListController.deleteShoppingList(shoppingListId)
 + nocsrf
-POST    /shoppingListJson/:shoppingListId controllers.ShoppingListController.postShoppingList(shoppingListId)
+POST    /shoppingListJson/:shoppingListId       controllers.ShoppingListController.postShoppingList(shoppingListId)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
 

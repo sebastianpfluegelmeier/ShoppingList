@@ -10,8 +10,15 @@
 
     <div>
         @for(shoppinglist <- shoppinglists) {
-            <a href="/shoppingList/@(shoppinglist.id)">@(shoppinglist.name)</a>
-            <br>
+            @if(!shoppinglist.disabled) {
+                <a href="/shoppingList/@(shoppinglist.id)">@(shoppinglist.name)</a>
+                <form action="/deleteShoppingList/@(shoppinglist.id.get)" 
+                    method="post">
+                    <input type="hidden" name="householdId" value="@(household.id.get)"></input>
+                    <button type="submit" value="remove" class="btn"> remove </button>
+                    @helper.CSRF.formField
+                </form>
+            }
         }
     </div>
 

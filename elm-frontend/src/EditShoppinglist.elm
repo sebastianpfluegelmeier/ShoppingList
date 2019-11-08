@@ -6,7 +6,7 @@ import Array.Extra exposing(removeAt)
 import Http
 import Debug exposing (toString)
 import Array exposing(Array)
-import Json.Decode exposing (Decoder, field, int, nullable, list, string, map2, map3, map4, array)
+import Json.Decode exposing (Decoder, field, int, nullable, list, string, map2, map3, map4, map5, array, bool)
 import Json.Encode.Extra exposing (maybe)
 import Json.Encode
 
@@ -33,6 +33,7 @@ type alias Model =
     , householdId: Int
     , name: String
     , list: Array Item
+    , disabled: Bool
     , error: Maybe String
     }
 
@@ -41,6 +42,7 @@ type alias ShoppingList =
     , id: Int
     , householdId: Int
     , list: Array Item
+    , disabled: Bool
     }
 
 type alias Item = 
@@ -52,7 +54,7 @@ type alias Item =
 
 shoppingListDecoder : Decoder ShoppingList
 shoppingListDecoder =
-  map4 ShoppingList
+  map5 ShoppingList
     ( field "name" string )
     ( field "id" int )
     ( field "householdId" int )
@@ -65,6 +67,7 @@ shoppingListDecoder =
         )
       )
     )
+    ( field "disabled" bool)
 
 shoppingListEncoder : ShoppingList -> Json.Encode.Value
 shoppingListEncoder shoppingList =
@@ -79,12 +82,13 @@ shoppingListEncoder shoppingList =
         , ("list", Json.Encode.array encodeItem shoppingList.list)
         , ("id", Json.Encode.int shoppingList.id)
         , ("householdId", Json.Encode.int shoppingList.householdId)
+        , ("disabled", Json.Encode.bool shoppingList.disabled)
         ] 
 
 init : Int -> (Model, Cmd Msg)
 init id =
   {-very bad model, fix soon, but how? maybe one case for loaded, one for not loaded-}
-  ( { id = id, name = "", householdId = -1 , list = Array.empty, error = Nothing}
+  ( { id = id, name = "", householdId = -1 , list = Array.empty, error = Nothing, disabled = False}
   , Http.get
       { url = String.concat ["/shoppingListJson/", String.fromInt id]
       , expect = Http.expectJson GotShoppingList shoppingListDecoder
@@ -127,7 +131,14 @@ update msg model =
     Ignore _ -> (model, Cmd.none)
     Save -> (model, Http.post 
         { url = String.concat ["/shoppingListJson/", String.fromInt model.id]
-        , body = Http.jsonBody (shoppingListEncoder { name = model.name, id = model.id, householdId = model.householdId, list = model.list })
+        , body = Http.jsonBody (shoppingListEncoder 
+          { name = model.name
+          , id = model.id
+          , householdId = model.householdId
+          , list = model.list
+          , disabled = model.disabled 
+          }
+        )
         , expect = Http.expectWhatever Ignore 
         })
 

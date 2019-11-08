@@ -40,10 +40,11 @@ trait DatabaseSchema {
         def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
         def name = column[String]("NAME")
         def householdId = column[Long]("HOUSEHOLD_ID")
+        def disabled = column[Boolean]("DISABLED")
 
         def household = foreignKey("FK_HOUSEHOLD_ID", householdId, households)(_.id)
 
-        def * = (id.?, name, householdId) <> (ShoppingList.tupled, ShoppingList.unapply)
+        def * = (id.?, name, householdId, disabled) <> (ShoppingList.tupled, ShoppingList.unapply)
     }
 
     val shoppingLists = TableQuery[ShoppingLists]

@@ -34,6 +34,7 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
       "name" -> shoppingList.name,
       "householdId" -> shoppingList.householdId,
       "id" -> shoppingList.id,
+      "disabled" -> shoppingList.disabled,
       "list" -> 
         Json.arr(
           shoppingListItems.map(
@@ -48,7 +49,7 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
   }
 
 
-  case class ShoppingListJson(name: String, id: Long, householdId: Long, list: List[ShoppingListItemJson])
+  case class ShoppingListJson(name: String, id: Long, householdId: Long, list: List[ShoppingListItemJson], disabled: Boolean)
   case class ShoppingListItemJson(name: String, id: Long, purchaseId: Option[Long])
 
   implicit val readsShoppingListItem: Reads[ShoppingListItemJson] = (
@@ -61,14 +62,20 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
       (JsPath \ "name").read[String] and
       (JsPath \ "id").read[Int] and
       (JsPath \ "householdId").read[Int] and
-      (JsPath \ "list").read[List[ShoppingListItemJson]]
-    )(ShoppingListJson.apply(_,_,_,_))
+      (JsPath \ "list").read[List[ShoppingListItemJson]] and
+      (JsPath \ "disabled").read[Boolean] 
+    )(ShoppingListJson.apply(_,_,_,_,_))
 
   def postShoppingList(shoppingListId: String) = Action { implicit request: Request[AnyContent] => 
     val shoppingListJson = Json.parse(request.body.asJson.get.toString).as[ShoppingListJson]
     val items = shoppingListJson.list.map(item => ShoppingListItem(Some(item.id), shoppingListJson.id, item.name, item.purchaseId))
-    val shoppingList = ShoppingList(Some(shoppingListJson.id), shoppingListJson.name, shoppingListJson.householdId)
+    val shoppingList = ShoppingList(Some(shoppingListJson.id), shoppingListJson.name, shoppingListJson.householdId, shoppingListJson.disabled)
     dao.upsertShoppingList(shoppingList, items)
     Ok("")
+  }
+
+  def deleteShoppingList(shoppingListId: String) = Action { implicit request: Request[AnyContent] => 
+    dao.disableShoppingList(shoppingListId.toLong)
+    Redirect("/household/" + request.body.asFormUrlEncoded.get.get("householdId").get(0))
   }
 }
