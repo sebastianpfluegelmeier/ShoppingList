@@ -6,7 +6,7 @@ import Array.Extra exposing(removeAt)
 import Http
 import Debug exposing (toString)
 import Array exposing(Array)
-import Json.Decode exposing (Decoder, field, int, list, string, map2, array)
+import Json.Decode exposing (Decoder, field, int, nullable, list, string, map2, map3, map4, array)
 import Json.Encode
 
 
@@ -29,6 +29,7 @@ main =
 
 type alias Model = 
     { id: Int
+    , shoppingListId: Int
     , name: String
     , list: Array Item
     , error: Maybe String
@@ -36,23 +37,29 @@ type alias Model =
 
 type alias ShoppingList = 
     { name: String
+    , id: Int
+    , shoppingListId: Int
     , list: Array Item
     }
 
 type alias Item = 
     { id: Int
+    , purchaseId: Maybe Int
     , name: String 
     }
 
 
 shoppingListDecoder : Decoder ShoppingList
 shoppingListDecoder =
-  map2 ShoppingList
+  map4 ShoppingList
     ( field "name" string )
+    ( field "id" int )
+    ( field "householdId" int )
     ( field "list" 
       ( array
-        ( map2 Item
+        ( map3 Item
             (field "id" int)
+            (field "purchaseId" (nullable int))
             (field "name" string)
         )
       )
@@ -72,7 +79,8 @@ shoppingListEncoder shoppingList =
 
 init : Int -> (Model, Cmd Msg)
 init id =
-  ( { id = id, name = "", list = Array.empty, error = Nothing}
+  {-very bad model, fix soon, but how? maybe one case for loaded, one for not loaded-}
+  ( { id = id, name = "", shoppingListId = -1 , list = Array.empty, error = Nothing}
   , Http.get
       { url = String.concat ["/shoppingListJson/", String.fromInt id]
       , expect = Http.expectJson GotShoppingList shoppingListDecoder
@@ -107,15 +115,15 @@ update msg model =
     ItemNameChanged index name -> 
         let newItem = 
                 Array.get index model.list 
-                |> Maybe.withDefault { name = name, id = 0 } 
+                |> Maybe.withDefault { id = 0, purchaseId = Nothing , name = name } 
                 |> \item -> { item | name = name}
         in ( {model | list = Array.set index newItem model.list }, Cmd.none)
-    NewItem -> ( {model | list = Array.push {id = 0, name = ""} model.list }, Cmd.none)
+    NewItem -> ( {model | list = Array.push {id = 0, purchaseId = Nothing, name = "" } model.list }, Cmd.none)
     RemoveItem index -> ( {model | list = removeAt index model.list }, Cmd.none)
     Ignore _ -> (model, Cmd.none)
     Save -> (model, Http.post 
         { url = String.concat ["/shoppingListJson/", String.fromInt model.id]
-        , body = Http.jsonBody (shoppingListEncoder { name = model.name, list = model.list })
+        , body = Http.jsonBody (shoppingListEncoder { name = model.name, id = model.id, shoppingListId = model.shoppingListId, list = model.list })
         , expect = Http.expectWhatever Ignore 
         })
 

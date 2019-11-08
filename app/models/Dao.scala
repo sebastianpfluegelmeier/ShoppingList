@@ -135,6 +135,11 @@ class Dao extends DatabaseSchema {
 
   }
 
+  def upsertShoppingList(shoppingList: ShoppingList, items: List[ShoppingListItem]) {
+    runDbOperation(shoppingLists += shoppingList)
+    items.map(item => runDbOperation(shoppingListItems.insertOrUpdate(item)))
+  }
+
   def removeHousehold(id: Long) = {
       runDbOperation(households.filter(h => h.id === id).delete)
       runDbOperation(personsHouseholds.filter(ph => ph.householdId === id).delete)
