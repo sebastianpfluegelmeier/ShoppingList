@@ -68,8 +68,6 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
     val shoppingListJson = Json.parse(request.body.asJson.get.toString).as[ShoppingListJson]
     val items = shoppingListJson.list.map(item => ShoppingListItem(Some(item.id), shoppingListJson.id, item.name, item.purchaseId))
     val shoppingList = ShoppingList(Some(shoppingListJson.id), shoppingListJson.name, shoppingListJson.householdId)
-    items.map(i => i.shoppingListId)
-    
     dao.upsertShoppingList(shoppingList, items)
     Ok("")
   }
