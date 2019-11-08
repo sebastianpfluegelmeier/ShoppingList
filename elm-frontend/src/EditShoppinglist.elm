@@ -7,6 +7,7 @@ import Http
 import Debug exposing (toString)
 import Array exposing(Array)
 import Json.Decode exposing (Decoder, field, int, nullable, list, string, map2, map3, map4, array)
+import Json.Encode.Extra exposing (maybe)
 import Json.Encode
 
 
@@ -29,7 +30,7 @@ main =
 
 type alias Model = 
     { id: Int
-    , shoppingListId: Int
+    , householdId: Int
     , name: String
     , list: Array Item
     , error: Maybe String
@@ -38,7 +39,7 @@ type alias Model =
 type alias ShoppingList = 
     { name: String
     , id: Int
-    , shoppingListId: Int
+    , householdId: Int
     , list: Array Item
     }
 
@@ -70,17 +71,20 @@ shoppingListEncoder shoppingList =
     let encodeItem item = 
             Json.Encode.object 
                 [ ("id", Json.Encode.int item.id)
+                , ("purchaseId", (maybe Json.Encode.int) item.purchaseId)
                 , ("name", Json.Encode.string item.name)
                 ]
     in Json.Encode.object
         [ ("name", Json.Encode.string shoppingList.name) 
         , ("list", Json.Encode.array encodeItem shoppingList.list)
+        , ("id", Json.Encode.int shoppingList.id)
+        , ("householdId", Json.Encode.int shoppingList.householdId)
         ] 
 
 init : Int -> (Model, Cmd Msg)
 init id =
   {-very bad model, fix soon, but how? maybe one case for loaded, one for not loaded-}
-  ( { id = id, name = "", shoppingListId = -1 , list = Array.empty, error = Nothing}
+  ( { id = id, name = "", householdId = -1 , list = Array.empty, error = Nothing}
   , Http.get
       { url = String.concat ["/shoppingListJson/", String.fromInt id]
       , expect = Http.expectJson GotShoppingList shoppingListDecoder
@@ -108,7 +112,7 @@ update msg model =
     GotShoppingList result ->
       case result of
         Ok shoppingList ->
-          ( { model | list = shoppingList.list, name = shoppingList.name }, Cmd.none)
+          ( { model | list = shoppingList.list, name = shoppingList.name, id = shoppingList.id, householdId = shoppingList.householdId}, Cmd.none)
         Err error ->
           ( {model | error = Just (toString error) }, Cmd.none)
     NameChanged name -> ( { model | name = name }  , Cmd.none)
@@ -123,7 +127,7 @@ update msg model =
     Ignore _ -> (model, Cmd.none)
     Save -> (model, Http.post 
         { url = String.concat ["/shoppingListJson/", String.fromInt model.id]
-        , body = Http.jsonBody (shoppingListEncoder { name = model.name, id = model.id, shoppingListId = model.shoppingListId, list = model.list })
+        , body = Http.jsonBody (shoppingListEncoder { name = model.name, id = model.id, householdId = model.householdId, list = model.list })
         , expect = Http.expectWhatever Ignore 
         })
 

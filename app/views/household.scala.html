@@ -10,12 +10,14 @@
 
     <div>
         @for(shoppinglist <- shoppinglists) {
-            <a href="/shoppinglist/@(shoppinglist.id)">@(shoppinglist.name)</a>
+            <a href="/shoppingList/@(shoppinglist.id)">@(shoppinglist.name)</a>
+            <br>
         }
     </div>
 
-    <a href="/newShoppingList/@(household.id)"> new shoppinglist </a>
-
+    <div>
+        <a href="/newShoppingList/@(household.id)"> new shoppinglist </a>
+    </div>
 
     <h3> people </h3>
     <div>

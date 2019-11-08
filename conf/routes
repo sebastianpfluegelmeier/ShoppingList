@@ -19,7 +19,10 @@ POST    /addPersonToHousehold             controllers.HouseholdController.addPer
 POST    /removePersonFromHousehold        controllers.HouseholdController.removePersonFromHousehold
 
 GET     /newShoppingList/:householdId     controllers.ShoppingListController.newShoppingList(householdId)
-GET     /shoppingListJson/:shoppingListId controllers.ShoppingListController.getShoppingList(shoppingListId)
+GET     /shoppingListJson/:shoppingListId controllers.ShoppingListController.getShoppingListJson(shoppingListId)
+GET     /shoppingList/:shoppingListId     controllers.ShoppingListController.getShoppingList(shoppingListId)
++ nocsrf
+POST    /shoppingListJson/:shoppingListId controllers.ShoppingListController.postShoppingList(shoppingListId)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

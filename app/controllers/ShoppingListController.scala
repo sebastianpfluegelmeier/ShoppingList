@@ -22,7 +22,13 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
     Ok(views.html.newShoppingList(username, shoppingListId))
   }
 
-  def getShoppingList(shoppingListId: String) = Action { implicit request: Request[AnyContent] => 
+  def getShoppingList(shoppingListIdString: String) = Action { implicit request: Request[AnyContent] => 
+    var username = request.session.get("userName")
+    var shoppingListId = shoppingListIdString.toLong
+    Ok(views.html.newShoppingList(username, shoppingListId))
+  }
+
+  def getShoppingListJson(shoppingListId: String) = Action { implicit request: Request[AnyContent] => 
     val (shoppingList, shoppingListItems) = dao.getShoppingList(shoppingListId.toLong)
     val json: JsValue = Json.obj(
       "name" -> shoppingList.name,
@@ -33,7 +39,8 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
           shoppingListItems.map(
             sli => Json.obj(
               "id" -> sli.id.get,
-              "name" -> sli.name
+              "name" -> sli.name,
+              "purchaseId" -> sli.purchaseId
             )
         ))(0)
     )
@@ -42,28 +49,26 @@ class ShoppingListController @Inject()(cc: MessagesControllerComponents) extends
 
 
   case class ShoppingListJson(name: String, id: Long, householdId: Long, list: List[ShoppingListItemJson])
-  case class ShoppingListItemJson(name: String, id: Long)
+  case class ShoppingListItemJson(name: String, id: Long, purchaseId: Option[Long])
 
-  implicit object ShoppingListItemFormat extends Reads[ShoppingListItemJson] {
-    def reads(json: JsValue): ShoppingListItemJson = ShoppingListItemJson(
-      (json \ "name").as[String],
-      (json \ "id").as[Long]
-    )
-  }
+  implicit val readsShoppingListItem: Reads[ShoppingListItemJson] = (
+      (JsPath \ "name").read[String] and
+      (JsPath \ "id").read[Long] and
+      (JsPath \ "purchaseId").formatNullable[Long]
+    )(ShoppingListItemJson.apply(_, _,_))
 
-  implicit object ShoppingListFormat extends Reads[ShoppingListJson] {
-    def reads(json: JsValue): ShoppingListJson = ShoppingListJson(
-      (json \ "name").as[String],
-      (json \ "id").as[Int],
-      (json \ "householdId").as[Int],
-      (json \ "list").asOpt[List[ShoppingListItemJson]].getOrElse(List())
-    )
-  }
+  implicit val readsShoppingList: Reads[ShoppingListJson] = (
+      (JsPath \ "name").read[String] and
+      (JsPath \ "id").read[Int] and
+      (JsPath \ "householdId").read[Int] and
+      (JsPath \ "list").read[List[ShoppingListItemJson]]
+    )(ShoppingListJson.apply(_,_,_,_))
 
-  def postShoppingList() = Action { implicit request: Request[AnyContent] => 
+  def postShoppingList(shoppingListId: String) = Action { implicit request: Request[AnyContent] => 
     val shoppingListJson = Json.parse(request.body.asJson.get.toString).as[ShoppingListJson]
-    val items = shoppingListJson.list.map(item => ShoppingListItem(Some(item.id), shoppingListJson.id, item.name, None))
+    val items = shoppingListJson.list.map(item => ShoppingListItem(Some(item.id), shoppingListJson.id, item.name, item.purchaseId))
     val shoppingList = ShoppingList(Some(shoppingListJson.id), shoppingListJson.name, shoppingListJson.householdId)
+    items.map(i => i.shoppingListId)
     
     dao.upsertShoppingList(shoppingList, items)
     Ok("")

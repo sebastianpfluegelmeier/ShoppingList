@@ -4530,8 +4530,8 @@ var author$project$Main$Item = F3(
 		return {id: id, name: name, purchaseId: purchaseId};
 	});
 var author$project$Main$ShoppingList = F4(
-	function (name, id, shoppingListId, list) {
-		return {id: id, list: list, name: name, shoppingListId: shoppingListId};
+	function (name, id, householdId, list) {
+		return {householdId: householdId, id: id, list: list, name: name};
 	});
 var elm$core$Array$branchFactor = 32;
 var elm$core$Array$Array_elm_builtin = F4(
@@ -5933,7 +5933,7 @@ var elm$http$Http$get = function (r) {
 };
 var author$project$Main$init = function (id) {
 	return _Utils_Tuple2(
-		{error: elm$core$Maybe$Nothing, id: id, list: elm$core$Array$empty, name: '', shoppingListId: -1},
+		{error: elm$core$Maybe$Nothing, householdId: -1, id: id, list: elm$core$Array$empty, name: ''},
 		elm$http$Http$get(
 			{
 				expect: A2(elm$http$Http$expectJson, author$project$Main$GotShoppingList, author$project$Main$shoppingListDecoder),
@@ -5998,6 +5998,32 @@ var elm$json$Json$Encode$object = function (pairs) {
 			pairs));
 };
 var elm$json$Json$Encode$string = _Json_wrap;
+var elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return elm$core$Maybe$Nothing;
+		}
+	});
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var elm$json$Json$Encode$null = _Json_encodeNull;
+var elm_community$json_extra$Json$Encode$Extra$maybe = function (encoder) {
+	return A2(
+		elm$core$Basics$composeR,
+		elm$core$Maybe$map(encoder),
+		elm$core$Maybe$withDefault(elm$json$Json$Encode$null));
+};
 var author$project$Main$shoppingListEncoder = function (shoppingList) {
 	var encodeItem = function (item) {
 		return elm$json$Json$Encode$object(
@@ -6006,6 +6032,9 @@ var author$project$Main$shoppingListEncoder = function (shoppingList) {
 					_Utils_Tuple2(
 					'id',
 					elm$json$Json$Encode$int(item.id)),
+					_Utils_Tuple2(
+					'purchaseId',
+					elm_community$json_extra$Json$Encode$Extra$maybe(elm$json$Json$Encode$int)(item.purchaseId)),
 					_Utils_Tuple2(
 					'name',
 					elm$json$Json$Encode$string(item.name))
@@ -6019,7 +6048,13 @@ var author$project$Main$shoppingListEncoder = function (shoppingList) {
 				elm$json$Json$Encode$string(shoppingList.name)),
 				_Utils_Tuple2(
 				'list',
-				A2(elm$json$Json$Encode$array, encodeItem, shoppingList.list))
+				A2(elm$json$Json$Encode$array, encodeItem, shoppingList.list)),
+				_Utils_Tuple2(
+				'id',
+				elm$json$Json$Encode$int(shoppingList.id)),
+				_Utils_Tuple2(
+				'householdId',
+				elm$json$Json$Encode$int(shoppingList.householdId))
 			]));
 };
 var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
@@ -6186,15 +6221,6 @@ var elm$core$Array$set = F3(
 			tail));
 	});
 var elm$core$Debug$toString = _Debug_toString;
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var elm$http$Http$expectBytesResponse = F2(
@@ -6574,7 +6600,7 @@ var author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{list: shoppingList.list, name: shoppingList.name}),
+							{householdId: shoppingList.householdId, id: shoppingList.id, list: shoppingList.list, name: shoppingList.name}),
 						elm$core$Platform$Cmd$none);
 				} else {
 					var error = result.a;
@@ -6642,7 +6668,7 @@ var author$project$Main$update = F2(
 						{
 							body: elm$http$Http$jsonBody(
 								author$project$Main$shoppingListEncoder(
-									{id: model.id, list: model.list, name: model.name, shoppingListId: model.shoppingListId})),
+									{householdId: model.householdId, id: model.id, list: model.list, name: model.name})),
 							expect: elm$http$Http$expectWhatever(author$project$Main$Ignore),
 							url: elm$core$String$concat(
 								_List_fromArray(

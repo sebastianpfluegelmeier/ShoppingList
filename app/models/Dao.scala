@@ -135,7 +135,7 @@ class Dao extends DatabaseSchema {
 
   }
 
-  def upsertShoppingList(shoppingList: ShoppingList, items: List[ShoppingListItem]) {
+  def upsertShoppingList(shoppingList: ShoppingList, items: List[ShoppingListItem]) = {
     runDbOperation(shoppingLists += shoppingList)
     items.map(item => runDbOperation(shoppingListItems.insertOrUpdate(item)))
   }

@@ -52,12 +52,12 @@ trait DatabaseSchema {
         def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
         def shoppingListId = column[Long]("SHOPPING_LIST_ID")
         def name = column[String]("NAME")
-        def purchaseId = column[Long]("HOUSEHOLD_ID")
+        def purchaseId = column[Option[Long]]("PURCHASE_ID")
 
         def shoppinglist = foreignKey("FK_SHOPPINGLIST_ID", shoppingListId, shoppingLists)(_.id)
-        def purchase = foreignKey("FK_PURCHASE_ID", purchaseId, purchases)(_.id)
+        def purchase = foreignKey("FK_PURCHASE_ID", purchaseId, purchases)(_.id.?)
 
-        def * = (id.?, shoppingListId, name, purchaseId.?) <> (ShoppingListItem.tupled, ShoppingListItem.unapply)
+        def * = (id.?, shoppingListId, name, purchaseId) <> (ShoppingListItem.tupled, ShoppingListItem.unapply)
     }
 
     val shoppingListItems = TableQuery[ShoppingListItems]
