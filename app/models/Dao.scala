@@ -1,13 +1,13 @@
 package models
 
 import scala.concurrent.duration.Duration
-import slick.jdbc.H2Profile.api._
+import slick.jdbc.SQLiteProfile.api._
 import slick.jdbc.meta.MTable
 import concurrent.ExecutionContext.Implicits.global
 
 class Dao extends DatabaseSchema {
 
-  val db = Database.forConfig("h2")
+  val db = Database.forConfig("sqlite")
 
   def runDbOperation(operation: DBIOAction[Any, slick.dbio.NoStream, Nothing]) = {
     scala.concurrent.Await.result(

@@ -1,6 +1,6 @@
 package models
 
-import slick.jdbc.H2Profile.api._
+import slick.driver.SQLiteDriver.api._
 
 trait DatabaseSchema {
 
