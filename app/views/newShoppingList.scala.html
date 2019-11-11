@@ -5,6 +5,7 @@
     @navbar(username)
     <input type="hidden" id="shoppingListId" value="@(shoppinglistId)"></input>
     <div id="elm"></div>
+    <script src="@routes.Assets.versioned("shoppingList.js")"></script>
     <script>
         var app = Elm.Main.init({
             node: document.getElementById('elm'),

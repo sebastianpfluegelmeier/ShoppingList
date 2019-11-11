@@ -25,6 +25,15 @@ POST    /deleteShoppingList/:shoppingListId     controllers.ShoppingListControll
 + nocsrf
 POST    /shoppingListJson/:shoppingListId       controllers.ShoppingListController.postShoppingList(shoppingListId)
 
+GET     /shoppingLists                          controllers.AllShoppingListsController.allShoppingLists
+
+GET     /purchases                              controllers.PurchasesController.purchases
+GET     /purchase/:id                           controllers.PurchasesController.purchase(id)
+GET     /purchaseJson/:id                       controllers.PurchasesController.purchaseJson(id)
++ nocsrf
+POST    /purchaseAndShoppingListsJson/:id        controllers.PurchasesController.purchaseAndShoppingListsJsonPost(id)
+GET     /allUserShoppingListIds                 controllers.PurchasesController.allUserShoppingListsIds
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
 

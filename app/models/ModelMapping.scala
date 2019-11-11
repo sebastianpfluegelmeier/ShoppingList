@@ -1,6 +1,6 @@
 package models
 
-import slick.driver.SQLiteDriver.api._
+import slick.jdbc.SQLiteProfile.api._
 
 trait DatabaseSchema {
 
@@ -65,12 +65,13 @@ trait DatabaseSchema {
 
     class Purchases(tag: Tag) extends Table[Purchase](tag, "PURCHASE") {
         def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
+        def name = column[String]("NAME")
         def personId = column[Long]("PERSON_ID")
-        def price = column[Int]("NAME")
+        def price = column[Int]("PRICE")
 
         def person = foreignKey("FK_PERSON_ID", personId, persons)(_.id)
 
-        def * = (id.?, personId, price) <> (Purchase.tupled, Purchase.unapply)
+        def * = (id.?, name, personId, price) <> (Purchase.tupled, Purchase.unapply)
     }
 
     val purchases = TableQuery[Purchases]

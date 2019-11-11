@@ -3,9 +3,13 @@ package models
 import scala.concurrent.duration.Duration
 import slick.jdbc.SQLiteProfile.api._
 import slick.jdbc.meta.MTable
-import concurrent.ExecutionContext.Implicits.global
+import concurrent.ExecutionContext
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+//import concurrent.ExecutionContext.Implicits.global
+ 
 
 class Dao extends DatabaseSchema {
+
 
   val db = Database.forConfig("sqlite")
 
@@ -172,15 +176,37 @@ class Dao extends DatabaseSchema {
       } yield (s.disabled)).update(true))
   }
 
-  /*
-  def getAllHouseholdsForPerson(id: Long): Seq[Household] = {
+  def getAllShoppingLists(personId: Long): Seq[ShoppingList] = {
     scala.concurrent.Await.result(
-        db.run(households.join(personsHouseholds).filter(h => ).result)
+        db.run((for {
+          ph <- personsHouseholds if ph.personId === personId
+          h <- households if h.id === ph.householdId
+          s <- shoppingLists if s.householdId === h.id
+        } yield s).result)
         , Duration.Inf
     )
   }
-  */
 
+  def getPurchases(personId: Long): Seq[Purchase] = {
+    scala.concurrent.Await.result(
+        db.run(purchases.filter(p => p.personId === personId).result)
+        , Duration.Inf
+    )
+  }
+
+  def getPurchase(id: Long): Purchase = {
+    scala.concurrent.Await.result(
+        db.run(purchases.filter(p => p.id === id).result)
+        , Duration.Inf
+    )(0)
+  }
+
+  def setPurchase(id: Long, purchase: Purchase) = {
+    scala.concurrent.Await.result(
+        db.run(purchases.insertOrUpdate(purchase))
+        , Duration.Inf
+    )
+  }
 
   def setup(): Unit = { 
 

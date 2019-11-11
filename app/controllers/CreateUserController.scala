@@ -11,6 +11,7 @@ import play.api.libs.typedmap.{TypedKey, TypedMap}
 @Singleton
 class CreateUserController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
 
+
   def dao = new Dao
 
   def index() = Action { implicit request: Request[AnyContent] =>

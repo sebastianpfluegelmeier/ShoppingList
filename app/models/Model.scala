@@ -10,4 +10,4 @@ case class ShoppingList(id: Option[Long], name: String, householdId: Long, disab
 
 case class ShoppingListItem(id: Option[Long], shoppingListId: Long, name: String, purchaseId: Option[Long])
 
-case class Purchase(id: Option[Long], personId: Long, price: Int)
+case class Purchase(id: Option[Long], name: String, personId: Long, price: Int)

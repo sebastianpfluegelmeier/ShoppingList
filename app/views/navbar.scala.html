@@ -9,6 +9,12 @@
         <a class="btn btn-link text-light" href="/households">households</a>
     </section>
     <section class="navbar-section">
+        <a class="btn btn-link text-light" href="/shoppingLists">shopping lists</a>
+    </section>
+    <section class="navbar-section">
+        <a class="btn btn-link text-light" href="/purchases">purchases</a>
+    </section>
+    <section class="navbar-section">
         @(username match {
             case Some(un: String) => "Welcome " + un + "!"
             case None => ""

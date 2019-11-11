@@ -12,6 +12,8 @@ scalaVersion := "2.13.0"
 
 libraryDependencies ++= Seq(
   guice,
+  "com.typesafe.akka" %% "akka-actor" % "2.6.0",
+  "org.postgresql" % "postgresql" % "9.3-1100-jdbc4",
   "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test,
   "com.typesafe.play" %% "play-slick" % "4.0.2",
   "com.typesafe.play" %% "play-slick-evolutions" % "4.0.2",
