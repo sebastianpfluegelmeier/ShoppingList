@@ -1,0 +1,15 @@
+@(username: Option[String], purchaseId: Long)(implicit requestHeader: RequestHeader)
+
+@main("New Shoppinglist") {
+
+    @navbar(username)
+    <input type="hidden" id="purchaseId" value="@(purchaseId)"></input>
+    <script src="@routes.Assets.versioned("purchase.js")"></script>
+    <div id="elm"></div>
+    <script>
+        var app = Elm.Main.init({
+            node: document.getElementById('elm'),
+            flags: parseInt(document.getElementById('purchaseId').value)
+        });
+    </script>
+}

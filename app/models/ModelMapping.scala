@@ -68,10 +68,11 @@ trait DatabaseSchema {
         def name = column[String]("NAME")
         def personId = column[Long]("PERSON_ID")
         def price = column[Int]("PRICE")
+        def disabled = column[Boolean]("DISABLED")
 
         def person = foreignKey("FK_PERSON_ID", personId, persons)(_.id)
 
-        def * = (id.?, name, personId, price) <> (Purchase.tupled, Purchase.unapply)
+        def * = (id.?, name, personId, price, disabled) <> (Purchase.tupled, Purchase.unapply)
     }
 
     val purchases = TableQuery[Purchases]

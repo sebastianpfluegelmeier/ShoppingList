@@ -1,0 +1,29 @@
+@(username: Option[String], purchases: Seq[Purchase])(implicit requestHeader: RequestHeader)
+
+@main("All Purchases") {
+    @navbar(username)
+
+    <h2> purchases </h2>
+
+    <div>
+        @for(purchase <- purchases) {
+            @if(!purchase.disabled) {
+                <a href="purchase/@(purchase.id)"> @(purchase.name) </a>
+                <form action="/deletePurchase/@(purchase.id)" 
+                    method="post">
+                    <button type="submit" value="remove" class="btn"> remove </button>
+                    @helper.CSRF.formField
+                </form>
+            }
+        }
+
+
+    <h2> create new purchase </h2>
+        <a href="newPurchase"> new purchase </a>
+
+        <!--suchfunktion machen-->
+        <!-- farben oder durchgestichen bei eingekauften sachen -->
+        <!-- alphabetische liste mit allen sachen -->
+    </div>
+
+}

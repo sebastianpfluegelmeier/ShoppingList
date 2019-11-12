@@ -1,0 +1,16 @@
+@(username: Option[String], shoppingLists: Seq[ShoppingList])(implicit requestHeader: RequestHeader)
+
+@main("All Shopping Lists") {
+
+    @navbar(username)
+
+    <h2> shoppinglists </h2>
+
+    <div>
+        @for(shoppingList <- shoppingLists) {
+            <a href="shoppingList/@(shoppingList.id)" >@(shoppingList.name)</a>
+            <br>
+        }
+    </div>
+
+}

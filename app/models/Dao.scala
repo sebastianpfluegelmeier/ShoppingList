@@ -4,8 +4,7 @@ import scala.concurrent.duration.Duration
 import slick.jdbc.SQLiteProfile.api._
 import slick.jdbc.meta.MTable
 import concurrent.ExecutionContext
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-//import concurrent.ExecutionContext.Implicits.global
+import concurrent.ExecutionContext.Implicits.global
  
 
 class Dao extends DatabaseSchema {
@@ -206,6 +205,21 @@ class Dao extends DatabaseSchema {
         db.run(purchases.insertOrUpdate(purchase))
         , Duration.Inf
     )
+  }
+
+  def newPurchase(userId: Long): Long = {
+    scala.concurrent.Await.result(
+        db.run((purchases returning purchases.map(_.id)) += Purchase(None, "new purchase", userId, 0, false))
+        , Duration.Inf
+    )
+  }
+
+  def disablePurchase(id: Long) = {
+    scala.concurrent.Await.result(
+        db.run( (for { p <- purchases if p.id === id} yield (p.disabled)).update(true) )
+        , Duration.Inf
+    )
+
   }
 
   def setup(): Unit = { 
