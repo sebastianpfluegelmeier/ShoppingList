@@ -6734,6 +6734,14 @@ var elm$core$Array$indexedMap = F2(
 			true,
 			A3(elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
 	});
+var elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
+		}
+	});
 var elm$core$List$intersperse = F2(
 	function (sep, xs) {
 		if (!xs.b) {
@@ -6832,6 +6840,13 @@ var elm$html$Html$Events$onInput = function (tagger) {
 			elm$html$Html$Events$alwaysStop,
 			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
 };
+var elm_community$maybe_extra$Maybe$Extra$isJust = function (m) {
+	if (m.$ === 'Nothing') {
+		return false;
+	} else {
+		return true;
+	}
+};
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$pre,
@@ -6879,13 +6894,19 @@ var author$project$Main$view = function (model) {
 											[
 												A2(
 												elm$html$Html$input,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$value(item.name),
-														elm$html$Html$Events$onInput(
-														author$project$Main$ItemNameChanged(index)),
-														elm$html$Html$Attributes$class('numTextInput')
-													]),
+												A2(
+													elm$core$List$append,
+													elm_community$maybe_extra$Maybe$Extra$isJust(item.purchaseId) ? _List_fromArray(
+														[
+															elm$html$Html$Attributes$class('selected')
+														]) : _List_Nil,
+													_List_fromArray(
+														[
+															elm$html$Html$Attributes$value(item.name),
+															elm$html$Html$Events$onInput(
+															author$project$Main$ItemNameChanged(index)),
+															elm$html$Html$Attributes$class('numTextInput')
+														])),
 												_List_Nil),
 												A2(
 												elm$html$Html$button,

@@ -9,6 +9,7 @@ import Array exposing(Array)
 import Json.Decode exposing (Decoder, field, int, nullable, list, string, map2, map3, map4, map5, array, bool)
 import Json.Encode.Extra exposing (maybe)
 import Json.Encode
+import Maybe.Extra exposing (isJust)
 
 
 
@@ -165,7 +166,7 @@ view model =
             ( model.list 
             |> Array.indexedMap (\index item -> 
                 span [] 
-                [ input [value item.name, onInput (ItemNameChanged index), class "numTextInput"] []
+                [ input ( List.append (if isJust item.purchaseId then [class "selected"] else []) [value item.name, onInput (ItemNameChanged index), class "numTextInput"]) []
                 , button [ onClick (RemoveItem index), class "removeButton"] [text "remove"]
                 ]
             ) 
