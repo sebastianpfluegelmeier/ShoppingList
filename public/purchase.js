@@ -6361,6 +6361,9 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 };
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$label = _VirtualDom_node('label');
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -6409,6 +6412,13 @@ var author$project$Main$viewPurchase = function (purchase) {
 		_List_fromArray(
 			[
 				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('name')
+					])),
+				A2(
 				elm$html$Html$input,
 				_List_fromArray(
 					[
@@ -6416,6 +6426,13 @@ var author$project$Main$viewPurchase = function (purchase) {
 						elm$html$Html$Events$onInput(author$project$Main$NameChanged)
 					]),
 				_List_Nil),
+				A2(
+				elm$html$Html$label,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('price')
+					])),
 				A2(
 				elm$html$Html$input,
 				_List_fromArray(
@@ -6469,8 +6486,6 @@ var author$project$Main$getPurchaseItems = function (model) {
 				},
 				A2(elm$core$Maybe$withDefault, _List_Nil, model.shoppingLists))));
 };
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var author$project$Main$viewPurchaseItem = function (item) {
 	return elm$html$Html$text(item.name);
 };
@@ -6577,21 +6592,25 @@ var author$project$Main$viewItem = F2(
 					_List_Nil)
 				]));
 	});
+var elm$html$Html$h3 = _VirtualDom_node('h3');
 var author$project$Main$viewShoppingList = F2(
 	function (purchaseId, shoppingList) {
 		return A2(
 			elm$html$Html$div,
 			_List_Nil,
 			A2(
-				elm$core$List$intersperse,
-				A2(elm$html$Html$br, _List_Nil, _List_Nil),
+				elm$core$List$cons,
 				A2(
-					elm$core$List$cons,
-					elm$html$Html$text(shoppingList.name),
-					A2(
-						elm$core$List$map,
-						author$project$Main$viewItem(purchaseId),
-						elm$core$Array$toList(shoppingList.list)))));
+					elm$html$Html$h3,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text(shoppingList.name)
+						])),
+				A2(
+					elm$core$List$map,
+					author$project$Main$viewItem(purchaseId),
+					elm$core$Array$toList(shoppingList.list))));
 	});
 var author$project$Main$viewShoppingLists = F2(
 	function (purchaseId, shoppingLists) {
@@ -6631,6 +6650,13 @@ var author$project$Main$view = function (model) {
 				author$project$Main$viewShoppingLists,
 				model.id,
 				A2(elm$core$Maybe$withDefault, _List_Nil, model.shoppingLists)),
+				A2(
+				elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$text('purchase')
+					])),
 				author$project$Main$viewPurchaseItems(model),
 				A2(
 				elm$html$Html$button,

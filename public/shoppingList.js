@@ -6770,6 +6770,7 @@ var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$label = _VirtualDom_node('label');
 var elm$html$Html$pre = _VirtualDom_node('pre');
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -6781,6 +6782,7 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			elm$json$Json$Encode$string(string));
 	});
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -6833,16 +6835,29 @@ var elm$html$Html$Events$onInput = function (tagger) {
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$pre,
-		_List_Nil,
 		_List_fromArray(
 			[
-				elm$html$Html$text('name: '),
+				elm$html$Html$Attributes$class('shoppingListBox')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$label,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('label')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('name: ')
+					])),
 				A2(
 				elm$html$Html$input,
 				_List_fromArray(
 					[
 						elm$html$Html$Attributes$value(model.name),
-						elm$html$Html$Events$onInput(author$project$Main$NameChanged)
+						elm$html$Html$Events$onInput(author$project$Main$NameChanged),
+						elm$html$Html$Attributes$class('inputImportant')
 					]),
 				_List_Nil),
 				A2(elm$html$Html$br, _List_Nil, _List_Nil),
@@ -6868,7 +6883,8 @@ var author$project$Main$view = function (model) {
 													[
 														elm$html$Html$Attributes$value(item.name),
 														elm$html$Html$Events$onInput(
-														author$project$Main$ItemNameChanged(index))
+														author$project$Main$ItemNameChanged(index)),
+														elm$html$Html$Attributes$class('numTextInput')
 													]),
 												_List_Nil),
 												A2(
@@ -6876,7 +6892,8 @@ var author$project$Main$view = function (model) {
 												_List_fromArray(
 													[
 														elm$html$Html$Events$onClick(
-														author$project$Main$RemoveItem(index))
+														author$project$Main$RemoveItem(index)),
+														elm$html$Html$Attributes$class('removeButton')
 													]),
 												_List_fromArray(
 													[
@@ -6890,7 +6907,8 @@ var author$project$Main$view = function (model) {
 				elm$html$Html$button,
 				_List_fromArray(
 					[
-						elm$html$Html$Events$onClick(author$project$Main$NewItem)
+						elm$html$Html$Events$onClick(author$project$Main$NewItem),
+						elm$html$Html$Attributes$class('buttonFixedWidth')
 					]),
 				_List_fromArray(
 					[
@@ -6900,7 +6918,8 @@ var author$project$Main$view = function (model) {
 				elm$html$Html$button,
 				_List_fromArray(
 					[
-						elm$html$Html$Events$onClick(author$project$Main$Save)
+						elm$html$Html$Events$onClick(author$project$Main$Save),
+						elm$html$Html$Attributes$class('buttonFixedWidth')
 					]),
 				_List_fromArray(
 					[

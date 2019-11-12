@@ -6,18 +6,18 @@
 
     <h2>Login</h2>
         <form action="@routes.LoginController.loginAction()" method="post">
-            <div class="form-group">
-                <label class="from-label">name</label>
-                <input type="text" class="form-input" name="name"></input>
-                <label class="form-label">password</label>
-                <input type="password" class="form-input" name="password"></input>
+            <div  >
+                <label  >name</label>
+                <input type="text"   name="name"></input>
+                <label  >password</label>
+                <input type="password"   name="password"></input>
                 <br>
-                <button type="submit" value="login" class="btn"> login </button>
+                <button type="submit" value="login"  > login </button>
             </div>
             @helper.CSRF.formField
         </form>
     @if(wrongPassword) {
-        <div class="toast toast-error"> user or password is unknown </div>
+        <div  > user or password is unknown </div>
     }
     
 }

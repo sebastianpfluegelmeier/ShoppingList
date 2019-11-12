@@ -11,7 +11,7 @@
                 <a href="purchase/@(purchase.id)"> @(purchase.name) </a>
                 <form action="/deletePurchase/@(purchase.id)" 
                     method="post">
-                    <button type="submit" value="remove" class="btn"> remove </button>
+                    <button type="submit" value="remove"> remove </button>
                     @helper.CSRF.formField
                 </form>
             }

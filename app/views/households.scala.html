@@ -18,11 +18,11 @@
     </div>
     <h3> new household </h3>
     <form action="@routes.HouseholdController.householdPost()" method="post">
-        <div class="form-group">
-            <label class="from-label">name</label>
-            <input type="text" class="form-input" name="name"></input>
+        <div  >
+            <label  >name</label>
+            <input type="text"   name="name"></input>
             <br>
-            <button type="submit" value="Create new household" class="btn"> create new household </button>
+            <button type="submit" value="Create new household"  > create new household </button>
         </div>
         @helper.CSRF.formField
     </form>

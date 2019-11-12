@@ -2,36 +2,66 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.shoppingListBox {
+    margin-left: auto; 
+    margin-right: auto;
+    border: solid black 1px;
+    padding: 12px;
+    width: 325px;
+}
+
+.label {
+    border: none;
+    font-weight: bold;
+    border-bottom: 2px solid black;
+    margin: 3px 12px;
+    padding: 2px 8px;
+    margin-right: 0;
+}
+
+.inputImportant {
+    background-color:black;
+    color: white;
+    font-weight: bolder;
+    border: none;
+    border-bottom: 2px dotted black;
+    margin: 12px 20px;
+    width: 210px;
+    padding: 2px 8px;
+    margin-left: 0;
+
+}
+
 .wrongPassword {
     color: red;
 }
 
-h1 {
-    text-align: center;
-    margin: 10px;
-    padding: 10px;
-    font-family: 'Open Sans', sans-serif;
+.numTextInput {
+    background-color: #f8f8f8;
+    border: none;
+    border-bottom: 2px dotted black;
+    margin: 3px 12px;
+    padding: 2px 8px;
 }
 
-h2 {
-    font-family: 'Open Sans', sans-serif;
-    margin: 10px;
-    padding: 10px;
+.removeButton {
+    font-size: 13px;
+    font-weight: bold;
+    background-color: white;
+    color: black;
+    border: 2.0px black solid;
+    margin: 4px;
+    padding: 2px 8px;
 }
 
-h3 {
-    font-family: 'Open Sans', sans-serif;
-    margin: 10px;
-    padding: 10px;
+.buttonFixedWidth {
+    font-size: 13px;
+    font-weight: bold;
+    width: 144px;
+    background-color: white;
+    color: black;
+    border: 2.0px black solid;
+    margin: 8px;
+    padding: 2px 8px;
 }
 
-
-.box {
-    border-style: solid;
-    border-color: lightgrey;
-    box-shadow: 2px 2px 4px rgba(0,0,0 , 0.04);
-    width: 42%;
-    margin: 5px;
-    padding: 5px;
-    border-width:0.01px;
-}

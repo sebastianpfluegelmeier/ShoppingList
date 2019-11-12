@@ -5,13 +5,13 @@
     @navbar(username)
     <h2> create user </h2>
     <form action="@routes.CreateUserController.createUser()" method="post">
-        <div class="form-group">
-            <label class="from-label">name</label>
-            <input type="text" class="form-input" name="name"></input>
-            <label class="form-label">password</label>
-            <input type="password" class="form-input" name="password"></input>
+        <div  >
+            <label  >name</label>
+            <input type="text"   name="name"></input>
+            <label  >password</label>
+            <input type="password"   name="password"></input>
             <br>
-            <button type="submit" value="Create new user" class="btn"> create new user </button>
+            <button type="submit" value="Create new user"  > create new user </button>
         </div>
         @helper.CSRF.formField
     </form>

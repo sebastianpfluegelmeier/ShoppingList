@@ -1,5 +1,5 @@
 import Browser
-import Html exposing (Html, text, pre, div, span, br, input, button)
+import Html exposing (Html, text, pre, div, span, br, input, button, label)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 import Array.Extra exposing(removeAt)
@@ -157,23 +157,24 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-      pre [] 
-        [ text "name: ", input [value model.name, onInput NameChanged] [] 
+      pre [ class "shoppingListBox" ] 
+        [ label [class "label"] [text "name: "]
+        , input [value model.name, onInput NameChanged, class "inputImportant"] [] 
         , br [] []
         , div [] 
             ( model.list 
             |> Array.indexedMap (\index item -> 
                 span [] 
-                [ input [value item.name, onInput (ItemNameChanged index)] []
-                , button [ onClick (RemoveItem index)] [text "remove"]
+                [ input [value item.name, onInput (ItemNameChanged index), class "numTextInput"] []
+                , button [ onClick (RemoveItem index), class "removeButton"] [text "remove"]
                 ]
             ) 
             |> Array.toList
             |> List.intersperse (br [] [])
             )
         , br [] []
-        , button [onClick NewItem] [text "add new item"]
-        , button [onClick Save] [text "save"]
+        , button [onClick NewItem, class "buttonFixedWidth"] [text "add new item"]
+        , button [onClick Save, class "buttonFixedWidth"] [text "save"]
         , case model.error of 
             Just errorMsg -> text (String.concat ["error: ", toString errorMsg])
             Nothing -> text ""

@@ -15,7 +15,7 @@
                 <form action="/deleteShoppingList/@(shoppinglist.id.get)" 
                     method="post">
                     <input type="hidden" name="householdId" value="@(household.id.get)"></input>
-                    <button type="submit" value="remove" class="btn"> remove </button>
+                    <button type="submit" value="remove"  > remove </button>
                     @helper.CSRF.formField
                 </form>
             }
@@ -33,7 +33,7 @@
                 @(person.name)
                 <input type="hidden" name="householdId" value="@(household.id)"></input>
                 <input type="hidden" name="personId" value="@(person.id)"></input>
-                <button type="submit" value="remove" class="btn"> remove </button>
+                <button type="submit" value="remove"  > remove </button>
                 @helper.CSRF.formField
             </form>
             <br>
@@ -42,12 +42,12 @@
 
     <h3> add person </h3>
     <form action="@routes.HouseholdController.addPersonToHousehold()" method="post">
-        <div class="form-group">
-            <label class="from-label">name</label>
-            <input type="text" class="form-input" name="name"></input>
+        <div  >
+            <label  >name</label>
+            <input type="text"   name="name"></input>
             <input type="hidden" name="householdId" value="@(household.id)"></input>
             <br>
-            <button type="submit" value="add person to household" class="btn"> add person to household </button>
+            <button type="submit" value="add person to household"  > add person to household </button>
         </div>
         @helper.CSRF.formField
     </form>
