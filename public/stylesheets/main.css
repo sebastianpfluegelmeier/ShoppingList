@@ -1,13 +1,35 @@
 * {
     font-family: 'Open Sans', sans-serif;
+    padding: 0px;
+    margin: 0px;
 }
 
-.shoppingListBox {
+.boxMiddle {
     margin-left: auto; 
     margin-right: auto;
     border: solid black 1px;
-    padding: 12px;
-    width: 325px;
+    padding: 24px;
+    width: 305px;
+}
+
+.masterBox {
+    margin-left: auto; 
+    margin-right: auto;
+    width: 730px;
+}
+
+.boxLeft {
+    border: solid black 1px;
+    float: left;
+    padding: 24px;
+    width: 305px;
+}
+
+.boxRight {
+    border: solid black 1px;
+    float: right;
+    padding: 24px;
+    width: 305px;
 }
 
 .label {
@@ -17,6 +39,7 @@
     margin: 3px 12px;
     padding: 2px 8px;
     margin-right: 0;
+    margin-left: 0;
 }
 
 .inputImportant {
@@ -42,6 +65,7 @@
     border-bottom: 2px dotted black;
     margin: 3px 12px;
     padding: 2px 8px;
+    margin-left: 0px;
 }
 
 .removeButton {
@@ -54,6 +78,26 @@
     padding: 2px 8px;
 }
 
+.removeButtonSmall {
+    font-size: 13px;
+    font-weight: bold;
+    background-color: white;
+    color: black;
+    border: 2.0px black solid;
+    margin-left: 8px;
+    padding: 0px 8px;
+}
+
+.removeButton:hover {
+    background-color: black;
+    color: white;
+}
+
+.removeButtonSmall:hover {
+    background-color: black;
+    color: white;
+}
+
 .buttonFixedWidth {
     font-size: 13px;
     font-weight: bold;
@@ -63,5 +107,66 @@
     border: 2.0px black solid;
     margin: 8px;
     padding: 2px 8px;
+    margin-left: 0px;
+    text-decoration: none;
 }
 
+.buttonFixedWidth:hover {
+    background-color: black;
+    color: white;
+}
+
+.navbar {
+    overflow:hidden;
+    background-color: black;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 30px;
+
+}
+
+.navbarSection {
+    float: left;
+    padding: 4px 12px;
+}
+
+.linkButton {
+    color: white;
+    background-color: black;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 0px 12px;
+    border: 1.0px white solid;
+}
+
+.linkButton:hover {
+    color: black;
+    background-color: white;
+}
+
+.navbarLogin {
+    float: right;
+    padding: 4px 12px;
+}
+
+.navbarText {
+    color: white;
+    font-weight: bold;
+    padding-right: 12px;
+}
+
+.disabled {
+    color: grey;
+}
+
+.chosen {
+    text-decoration: line-through;
+}
+
+.notChosen {
+}
+
+.topBottomMargin {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}

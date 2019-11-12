@@ -4,51 +4,55 @@
 
     @navbar(username)
 
-    <h2>@(household.name)</h2>
+    <div class="masterBox">
+        <h2>@(household.name)</h2>
 
-    <h3> shoppinglists </h3>
+        <div class="boxLeft">
+            <h3> shoppinglists </h3>
 
-    <div>
-        @for(shoppinglist <- shoppinglists) {
-            @if(!shoppinglist.disabled) {
-                <a href="/shoppingList/@(shoppinglist.id)">@(shoppinglist.name)</a>
-                <form action="/deleteShoppingList/@(shoppinglist.id.get)" 
-                    method="post">
-                    <input type="hidden" name="householdId" value="@(household.id.get)"></input>
-                    <button type="submit" value="remove"  > remove </button>
+            <div style="height: 12px"></div>
+
+            @for(shoppinglist <- shoppinglists) {
+                @if(!shoppinglist.disabled) {
+                    <a class="linkButton" style="float: left" href="/shoppingList/@(shoppinglist.id)">@(shoppinglist.name)</a>
+                    <form action="/deleteShoppingList/@(shoppinglist.id.get)" 
+                        method="post">
+                        <input type="hidden"  name="householdId" value="@(household.id.get)"></input>
+                        <button class="removeButtonSmall" type="submit" value="remove"  > remove </button>
+                        @helper.CSRF.formField
+                    </form>
+                    <div style="height: 1px; margin: 1px; padding:1px;"></div>
+                }
+            }
+
+            <a class="buttonFixedWidth" href="/newShoppingList/@(household.id)"> new shoppinglist </a>
+        </div>
+
+        <div class="boxRight">
+            <h3> people </h3>
+            <div style="height: 12px"></div>
+            @for(person <- people) {
+                <form action="@routes.HouseholdController.removePersonFromHousehold()" method="post">
+                    @(person.name)
+                    <input type="hidden" name="householdId" value="@(household.id)"></input>
+                    <input type="hidden" name="personId" value="@(person.id)"></input>
+                    <button class="removeButtonSmall" type="submit" value="remove"  > remove </button>
                     @helper.CSRF.formField
                 </form>
+                <br>
             }
-        }
-    </div>
 
-    <div>
-        <a href="/newShoppingList/@(household.id)"> new shoppinglist </a>
-    </div>
-
-    <h3> people </h3>
-    <div>
-        @for(person <- people) {
-            <form action="@routes.HouseholdController.removePersonFromHousehold()" method="post">
-                @(person.name)
-                <input type="hidden" name="householdId" value="@(household.id)"></input>
-                <input type="hidden" name="personId" value="@(person.id)"></input>
-                <button type="submit" value="remove"  > remove </button>
+            <h3> add person </h3>
+            <form action="@routes.HouseholdController.addPersonToHousehold()" method="post">
+                <div  >
+                    <label class="label" >name</label>
+                    <input class="numTextInput" type="text"   name="name"></input>
+                    <input type="hidden" name="householdId" value="@(household.id)"></input>
+                    <br>
+                    <button class="buttonFixedWidth" type="submit" value="add person to household"  > add person to household </button>
+                </div>
                 @helper.CSRF.formField
             </form>
-            <br>
-        }
-    </div>
-
-    <h3> add person </h3>
-    <form action="@routes.HouseholdController.addPersonToHousehold()" method="post">
-        <div  >
-            <label  >name</label>
-            <input type="text"   name="name"></input>
-            <input type="hidden" name="householdId" value="@(household.id)"></input>
-            <br>
-            <button type="submit" value="add person to household"  > add person to household </button>
         </div>
-        @helper.CSRF.formField
-    </form>
+    </div>
 }

@@ -6837,7 +6837,7 @@ var author$project$Main$view = function (model) {
 		elm$html$Html$pre,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('shoppingListBox')
+				elm$html$Html$Attributes$class(' boxMiddle')
 			]),
 		_List_fromArray(
 			[

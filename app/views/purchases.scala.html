@@ -3,27 +3,32 @@
 @main("All Purchases") {
     @navbar(username)
 
-    <h2> purchases </h2>
+    <div class="masterBox">
+        <h2> purchases </h2>
 
-    <div>
-        @for(purchase <- purchases) {
-            @if(!purchase.disabled) {
-                <a href="purchase/@(purchase.id)"> @(purchase.name) </a>
-                <form action="/deletePurchase/@(purchase.id)" 
-                    method="post">
-                    <button type="submit" value="remove"> remove </button>
-                    @helper.CSRF.formField
-                </form>
+        <div class="boxLeft">
+            <h3> all purchases</h3>
+            @for(purchase <- purchases) {
+                @if(!purchase.disabled) {
+                    <a class="linkButton" style="float: left" href="purchase/@(purchase.id)"> @(purchase.name) </a>
+                    <form action="/deletePurchase/@(purchase.id)" 
+                        method="post">
+                        <button class="removeButtonSmall" type="submit" value="remove"> remove </button>
+                        @helper.CSRF.formField
+                    </form>
+                    <div style="height: 4px"></div>
+                }
             }
-        }
+        </div>
 
+        <div class="boxRight">
+            <h3> create new purchase </h3>
+            <a class="buttonFixedWidth" href="newPurchase"> new purchase </a>
 
-    <h2> create new purchase </h2>
-        <a href="newPurchase"> new purchase </a>
-
-        <!--suchfunktion machen-->
-        <!-- farben oder durchgestichen bei eingekauften sachen -->
-        <!-- alphabetische liste mit allen sachen -->
+            <!--suchfunktion machen-->
+            <!-- farben oder durchgestichen bei eingekauften sachen -->
+            <!-- alphabetische liste mit allen sachen -->
+        </div>
     </div>
 
 }

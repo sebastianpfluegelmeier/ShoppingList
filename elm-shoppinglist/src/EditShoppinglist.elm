@@ -157,7 +157,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-      pre [ class "shoppingListBox" ] 
+      pre [ class " boxMiddle" ] 
         [ label [class "label"] [text "name: "]
         , input [value model.name, onInput NameChanged, class "inputImportant"] [] 
         , br [] []

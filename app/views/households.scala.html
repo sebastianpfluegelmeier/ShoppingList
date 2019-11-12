@@ -4,26 +4,30 @@
 
     @navbar(username)
 
-    <h2>households</h2>
-    <h3> my households </h3>
-    <div>
-        @for(household <- households) {
-            <a href="/household/@(household.id)" >@(household.name)</a>
-            <br>
-        }
+    <div class="masterBox">
+        <h2>households</h2>
+        <div class="boxLeft">
+            <h3> my households </h3>
+            @for(household <- households) {
+                <a class="linkButton"href="/household/@(household.id)" >@(household.name)</a>
+                <br>
+            }
 
-        @if(households.length < 1) {
-            you have no households yet
-        }
-    </div>
-    <h3> new household </h3>
-    <form action="@routes.HouseholdController.householdPost()" method="post">
-        <div  >
-            <label  >name</label>
-            <input type="text"   name="name"></input>
-            <br>
-            <button type="submit" value="Create new household"  > create new household </button>
+            @if(households.length < 1) {
+                you have no households yet
+            }
         </div>
-        @helper.CSRF.formField
-    </form>
+        <div class="boxRight">
+            <h3> new household </h3>
+            <form action="@routes.HouseholdController.householdPost()" method="post">
+                <div  >
+                    <label class="label" >name</label>
+                    <input class="numTextInput" type="text"   name="name"></input>
+                    <br>
+                    <button class="buttonFixedWidth" type="submit" value="Create new household"  > create new household </button>
+                </div>
+                @helper.CSRF.formField
+            </form>
+        </div>
+    </div>
 }

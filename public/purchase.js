@@ -6359,6 +6359,7 @@ var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 			return 3;
 	}
 };
+var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$label = _VirtualDom_node('label');
@@ -6371,7 +6372,7 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			elm$json$Json$Encode$string(string));
 	});
-var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
 var elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
@@ -6413,34 +6414,44 @@ var author$project$Main$viewPurchase = function (purchase) {
 			[
 				A2(
 				elm$html$Html$label,
-				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('label')
+					]),
 				_List_fromArray(
 					[
 						elm$html$Html$text('name')
 					])),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
 				elm$html$Html$input,
 				_List_fromArray(
 					[
+						elm$html$Html$Attributes$class('numTextInput'),
 						elm$html$Html$Attributes$value(purchase.name),
 						elm$html$Html$Events$onInput(author$project$Main$NameChanged)
 					]),
 				_List_Nil),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
 				elm$html$Html$label,
-				_List_Nil,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('label')
+					]),
 				_List_fromArray(
 					[
 						elm$html$Html$text('price')
 					])),
+				A2(elm$html$Html$br, _List_Nil, _List_Nil),
 				A2(
 				elm$html$Html$input,
 				_List_fromArray(
 					[
+						elm$html$Html$Attributes$class('numTextInput'),
 						elm$html$Html$Attributes$value(
 						elm$core$Debug$toString(purchase.price)),
-						elm$html$Html$Events$onInput(author$project$Main$PriceChanged),
-						elm$html$Html$Attributes$type_('number')
+						elm$html$Html$Events$onInput(author$project$Main$PriceChanged)
 					]),
 				_List_Nil)
 			]));
@@ -6507,7 +6518,6 @@ var elm$core$List$intersperse = F2(
 			return A2(elm$core$List$cons, hd, spersed);
 		}
 	});
-var elm$html$Html$br = _VirtualDom_node('br');
 var author$project$Main$viewPurchaseItems = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -6524,16 +6534,8 @@ var author$project$Main$AddItem = F2(
 	function (a, b) {
 		return {$: 'AddItem', a: a, b: b};
 	});
+var author$project$Main$NoOp = {$: 'NoOp'};
 var elm$core$Basics$neq = _Utils_notEqual;
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
-var elm$html$Html$Attributes$checked = elm$html$Html$Attributes$boolProperty('checked');
-var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6544,61 +6546,56 @@ var elm$html$Html$Events$on = F2(
 			event,
 			elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
-var elm$html$Html$Events$targetChecked = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'checked']),
-	elm$json$Json$Decode$bool);
-var elm$html$Html$Events$onCheck = function (tagger) {
+var elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		elm$html$Html$Events$on,
-		'change',
-		A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetChecked));
+		'click',
+		elm$json$Json$Decode$succeed(msg));
 };
 var author$project$Main$viewItem = F2(
 	function (purchaseId, item) {
+		var disabled = A2(
+			elm$core$Maybe$withDefault,
+			false,
+			A2(
+				elm$core$Maybe$map,
+				elm$core$Basics$neq(purchaseId),
+				item.purchaseId));
+		var chosen = A2(
+			elm$core$Maybe$withDefault,
+			false,
+			A2(
+				elm$core$Maybe$map,
+				elm$core$Basics$eq(purchaseId),
+				item.purchaseId));
 		return A2(
 			elm$html$Html$div,
-			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$text(item.name),
-					A2(
-					elm$html$Html$input,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$type_('checkbox'),
-							elm$html$Html$Attributes$disabled(
-							A2(
-								elm$core$Maybe$withDefault,
-								false,
-								A2(
-									elm$core$Maybe$map,
-									elm$core$Basics$neq(purchaseId),
-									item.purchaseId))),
-							elm$html$Html$Attributes$checked(
-							A2(
-								elm$core$Maybe$withDefault,
-								false,
-								A2(
-									elm$core$Maybe$map,
-									elm$core$Basics$eq(purchaseId),
-									item.purchaseId))),
-							elm$html$Html$Events$onCheck(
-							function (on) {
-								return on ? A2(author$project$Main$AddItem, item.id, true) : A2(author$project$Main$AddItem, item.id, false);
-							})
-						]),
-					_List_Nil)
+					elm$html$Html$Attributes$class(
+					disabled ? 'disabled' : (chosen ? 'chosen' : 'notChosen')),
+					elm$html$Html$Events$onClick(
+					disabled ? author$project$Main$NoOp : (chosen ? A2(author$project$Main$AddItem, item.id, false) : A2(author$project$Main$AddItem, item.id, true)))
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text(item.name)
 				]));
 	});
+var elm$core$Array$length = function (_n0) {
+	var len = _n0.a;
+	return len;
+};
 var elm$html$Html$h3 = _VirtualDom_node('h3');
 var author$project$Main$viewShoppingList = F2(
 	function (purchaseId, shoppingList) {
 		return A2(
 			elm$html$Html$div,
-			_List_Nil,
-			A2(
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('topBottomMargin')
+				]),
+			(elm$core$Array$length(shoppingList.list) > 0) ? A2(
 				elm$core$List$cons,
 				A2(
 					elm$html$Html$h3,
@@ -6610,7 +6607,7 @@ var author$project$Main$viewShoppingList = F2(
 				A2(
 					elm$core$List$map,
 					author$project$Main$viewItem(purchaseId),
-					elm$core$Array$toList(shoppingList.list))));
+					elm$core$Array$toList(shoppingList.list))) : _List_Nil);
 	});
 var author$project$Main$viewShoppingLists = F2(
 	function (purchaseId, shoppingLists) {
@@ -6624,49 +6621,74 @@ var author$project$Main$viewShoppingLists = F2(
 	});
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$pre = _VirtualDom_node('pre');
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$pre,
-		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('masterBox')
+			]),
 		_List_fromArray(
 			[
 				A2(
-				elm$core$Maybe$withDefault,
-				A2(
-					elm$html$Html$div,
-					_List_Nil,
-					_List_fromArray(
-						[
-							elm$html$Html$text('purchase loading ...')
-						])),
-				A2(elm$core$Maybe$map, author$project$Main$viewPurchase, model.purchase)),
-				A2(
-				author$project$Main$viewShoppingLists,
-				model.id,
-				A2(elm$core$Maybe$withDefault, _List_Nil, model.shoppingLists)),
-				A2(
-				elm$html$Html$h3,
-				_List_Nil,
+				elm$html$Html$div,
 				_List_fromArray(
 					[
-						elm$html$Html$text('purchase')
-					])),
-				author$project$Main$viewPurchaseItems(model),
-				A2(
-				elm$html$Html$button,
-				_List_fromArray(
-					[
-						elm$html$Html$Events$onClick(author$project$Main$Save)
+						elm$html$Html$Attributes$class('boxLeft')
 					]),
 				_List_fromArray(
 					[
-						elm$html$Html$text('save')
+						A2(
+						author$project$Main$viewShoppingLists,
+						model.id,
+						A2(elm$core$Maybe$withDefault, _List_Nil, model.shoppingLists))
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('boxRight')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$h3,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('purchase')
+							])),
+						A2(
+						elm$core$Maybe$withDefault,
+						A2(
+							elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('purchase loading ...')
+								])),
+						A2(elm$core$Maybe$map, author$project$Main$viewPurchase, model.purchase)),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('topBottomMargin')
+							]),
+						_List_fromArray(
+							[
+								author$project$Main$viewPurchaseItems(model)
+							])),
+						A2(
+						elm$html$Html$button,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('buttonFixedWidth'),
+								elm$html$Html$Events$onClick(author$project$Main$Save)
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('save')
+							]))
 					]))
 			]));
 };

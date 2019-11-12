@@ -4,20 +4,23 @@
 
     @navbar(username)
 
+    <div class="boxMiddle">
     <h2>Login</h2>
         <form action="@routes.LoginController.loginAction()" method="post">
-            <div  >
-                <label  >name</label>
-                <input type="text"   name="name"></input>
-                <label  >password</label>
-                <input type="password"   name="password"></input>
+                <label class="label">name</label>
                 <br>
-                <button type="submit" value="login"  > login </button>
-            </div>
+                <input class="numTextInput" type="text"   name="name"></input>
+                <br>
+                <label class="label">password</label>
+                <br>
+                <input class="numTextInput" type="password"   name="password"></input>
+                <br>
+                <button class="buttonFixedWidth" type="submit" value="login" > login </button>
             @helper.CSRF.formField
         </form>
     @if(wrongPassword) {
         <div  > user or password is unknown </div>
     }
+    </div>
     
 }

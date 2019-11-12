@@ -1,28 +1,30 @@
 
 @(username: Option[String])
 
-<header  >
-    <section  >
-        <a   href="/createUser">create user</a>
+<header class="navbar">
+    <section class="navbarSection">
+        <a class="linkButton"  href="/createUser">create user</a>
     </section>
-    <section  >
-        <a   href="/households">households</a>
+    <section class="navbarSection" >
+        <a class="linkButton"  href="/households">households</a>
     </section>
-    <section  >
-        <a   href="/shoppingLists">shopping lists</a>
+    <section class="navbarSection" >
+        <a class="linkButton"  href="/shoppingLists">shopping lists</a>
     </section>
-    <section  >
-        <a   href="/purchases">purchases</a>
+    <section class="navbarSection" >
+        <a class="linkButton"  href="/purchases">purchases</a>
     </section>
-    <section  >
+    <section class="navbarLogin" >
+        <span class="navbarText">
         @(username match {
             case Some(un: String) => "Welcome " + un + "!"
             case None => ""
         })
+        </span>
         @if(username.isEmpty) {
-            <a   href="@routes.LoginController.loginAction()">login</a>
+            <a class="linkButton"  href="@routes.LoginController.loginAction()">login</a>
         } else {
-            <a   href="@routes.LoginController.logoutAction()">logout</a>
+            <a class="linkButton"  href="@routes.LoginController.logoutAction()">logout</a>
         }
     </section>
 </header>

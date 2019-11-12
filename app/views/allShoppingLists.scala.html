@@ -4,11 +4,12 @@
 
     @navbar(username)
 
-    <h2> shoppinglists </h2>
 
-    <div>
+    <div class=" boxMiddle">
+
+        <h2> shoppinglists </h2>
         @for(shoppingList <- shoppingLists) {
-            <a href="shoppingList/@(shoppingList.id)" >@(shoppingList.name)</a>
+            <a class="linkButton" href="shoppingList/@(shoppingList.id)" >@(shoppingList.name)</a>
             <br>
         }
     </div>
