@@ -109,6 +109,7 @@ type Msg
   | RemoveItem Int
   | Save
   | Ignore (Result Http.Error ())
+  | LoadAfterSave (Result Http.Error ())
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -140,8 +141,16 @@ update msg model =
           , disabled = model.disabled 
           }
         )
-        , expect = Http.expectWhatever Ignore 
+        , expect = Http.expectWhatever LoadAfterSave 
         })
+    LoadAfterSave _ ->
+      ( model
+      , Http.get
+          { url = String.concat ["/shoppingListJson/", String.fromInt model.id]
+          , expect = Http.expectJson GotShoppingList shoppingListDecoder
+          }
+      )
+
 
 
 -- SUBSCRIPTIONS

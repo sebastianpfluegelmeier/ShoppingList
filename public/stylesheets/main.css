@@ -157,6 +157,7 @@
 
 .disabled {
     color: grey;
+    text-decoration: line-through;
 }
 
 .chosen {

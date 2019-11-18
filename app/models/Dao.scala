@@ -12,104 +12,84 @@ class Dao extends DatabaseSchema {
 
   val db = Database.forConfig("sqlite")
 
-  def runDbOperation(operation: DBIOAction[Any, slick.dbio.NoStream, Nothing]) = {
+  def runDbOperation[T](operation: DBIOAction[T, slick.dbio.NoStream, Nothing]): T = {
     scala.concurrent.Await.result(
-        db.run(operation)
-        , Duration.Inf
+      db.run(operation)
+      , Duration.Inf
     )
-    ()
   }
 
   def newPerson(person: Person) = {
-      runDbOperation(persons += person)
+    runDbOperation(persons += person)
   }
 
-  def personExists(name: String, password: String) = {
-    scala.concurrent.Await.result(
-      db.run(persons.filter(p => p.name === name && p.password === password).result), 
-      Duration.Inf 
+  def personExists(name: String, password: String): Boolean = {
+    runDbOperation(
+      persons
+        .filter(p => p.name === name && p.password === password)
+        .result
     ).length > 0
   }
 
   def getPerson(name: String, password: String) = {
-    scala.concurrent.Await.result(
-      db.run(persons.filter(p => p.name === name && p.password === password).result), 
-      Duration.Inf 
+    runDbOperation(
+      persons
+        .filter(p => p.name === name && p.password === password)
+        .result 
     )(0)
-  }
-
-  def removePerson(id: Long) = {
-      runDbOperation(persons.filter(p => p.id === id).delete)
-  }
-
-  def getPerson(id: Long): Person = {
-    scala.concurrent.Await.result(
-        db.run(persons.filter(p => p.id === id).result)
-        , Duration.Inf
-    )(0)
-  }
-
-  def getPerson(name: String): Person = {
-    scala.concurrent.Await.result(
-        db.run(persons.filter(p => p.name === name).result)
-        , Duration.Inf
-    )(0)
-  }
-
-  def getAllPersons(): Seq[Person] = {
-    scala.concurrent.Await.result(
-        db.run(persons.result)
-        , Duration.Inf
-    )
   }
 
   def newHousehold(household: Household, personId: Long) = {
-    val householdId = scala.concurrent.Await.result(
-      db.run((households returning households.map(_.id)) += household)
-      , Duration.Inf
+    val householdId = runDbOperation(
+      (households returning households.map(_.id)) += household
     )
     runDbOperation(personsHouseholds += PersonHousehold(personId, householdId))
   }
 
   def addPersonToHousehold(householdId: Long, personName: String) = {
-    val personAlreadyInHousehold = scala.concurrent.Await.result(
-      db.run(
-          (for {
-            ph <- personsHouseholds if ph.householdId === householdId
-            p <- persons if p.id === ph.personId && p.name === personName
-          } yield ph).result)
-      , Duration.Inf
+    
+    val personAlreadyInHousehold = runDbOperation(
+      (for {
+        ph <- personsHouseholds if ph.householdId === householdId
+        p <- persons if p.id === ph.personId && p.name === personName
+      } yield ph).result
     ).length > 0
+
     if (!personAlreadyInHousehold) {
-      val personId: Option[Long] = scala.concurrent.Await.result(
-        db.run(persons.filter(p => p.name === personName).result)
-        , Duration.Inf
+      val personId: Option[Long] = runDbOperation(
+        persons.filter(_.name === personName).result
       )(0).id
-      runDbOperation(personsHouseholds += PersonHousehold(personId.get, householdId))
+
+      runDbOperation(
+        personsHouseholds += PersonHousehold(personId.get, householdId)
+      )
     }
   }
 
   def removePersonFromHousehold(householdId: Long, personId: Long) = {
-    runDbOperation(personsHouseholds.filter(ph => ph.personId === personId && ph.householdId === householdId).delete)
+    runDbOperation(
+      personsHouseholds
+        .filter(ph => ph.personId === personId && ph.householdId === householdId)
+        .delete
+    )
   }
 
   def getPeopleFromHousehold(householdId: Long): Seq[Person] = {
-    scala.concurrent.Await.result(
-        db.run(
-          (for {
-            ph <- personsHouseholds if ph.householdId === householdId
-            p <- persons if p.id === ph.personId
-          } yield p)
-          .result
-          )
-        , Duration.Inf
+    runDbOperation(
+      ( for {
+          ph <- personsHouseholds if ph.householdId === householdId
+          p <- persons if p.id === ph.personId
+        } yield p
+      )
+      .result
     )
   }
 
   def getShoppinglistsFromHousehold(householdId: Long): Seq[ShoppingList] = {
-    scala.concurrent.Await.result(
-        db.run(shoppingLists.filter(s => s.householdId === householdId).result)
-        , Duration.Inf
+    runDbOperation(
+      shoppingLists
+        .filter(_.householdId === householdId)
+        .result
     )
   }
 
@@ -122,115 +102,132 @@ class Dao extends DatabaseSchema {
 
   def getShoppingList(shoppingListId: Long): (ShoppingList, Seq[ShoppingListItem]) = {
 
-    val shoppingListItemsList = scala.concurrent.Await.result(
-        db.run(shoppingListItems.filter(sli => sli.shoppingListId === shoppingListId).result)
-        , Duration.Inf
-      )
+    val shoppingListItemsList = runDbOperation(
+      shoppingListItems.filter(sli => sli.shoppingListId === shoppingListId).result
+    )
 
+    val shoppingList = runDbOperation(
+      shoppingLists.filter(sl => sl.id === shoppingListId).result
+    )(0)
 
-    val shoppingList = scala.concurrent.Await.result(
-        db.run(shoppingLists.filter(sl => sl.id === shoppingListId).result)
-        , Duration.Inf
-      )(0)
-
-    
     (shoppingList, shoppingListItemsList)
-
   }
 
   def upsertShoppingList(shoppingList: ShoppingList, items: List[ShoppingListItem]) = {
-    runDbOperation(shoppingLists.insertOrUpdate(shoppingList))
-    items.map(item => runDbOperation(shoppingListItems.insertOrUpdate(item)))
+    runDbOperation(
+      shoppingLists.insertOrUpdate(shoppingList)
+    )
+
+    items
+      .map(item => 
+        runDbOperation(shoppingListItems.insertOrUpdate(item))
+      )
   }
 
   def removeHousehold(id: Long) = {
-      runDbOperation(households.filter(h => h.id === id).delete)
-      runDbOperation(personsHouseholds.filter(ph => ph.householdId === id).delete)
+
+      runDbOperation(
+        households.filter(h => h.id === id).delete
+      )
+
+      runDbOperation(
+        personsHouseholds.filter(ph => ph.householdId === id).delete
+      )
   }
 
   def getHouseholds(personId: Long): Seq[Household] = {
-    scala.concurrent.Await.result(
-        db.run(
-          (for {
-            ph <- personsHouseholds if ph.personId === personId
-            h <- households if h.id === ph.householdId
-          } yield h)
-          .result
-          )
-        , Duration.Inf
+    runDbOperation(
+      ( for {
+          ph <- personsHouseholds if ph.personId === personId
+          h <- households if h.id === ph.householdId
+        } yield h
+      )
+      .result
     )
   }
 
   def getHousehold(id: Long): Household = {
-    scala.concurrent.Await.result(
-        db.run(households.filter(h => h.id === id).result)
-        , Duration.Inf
+    runDbOperation(
+      households.filter(h => h.id === id).result
     )(0)
   }
 
   def disableShoppingList(id: Long) = {
     runDbOperation(
-      (for {
-        s <- shoppingLists if s.id === id
-      } yield (s.disabled)).update(true))
+      ( for {
+          s <- shoppingLists if s.id === id
+        } yield (s.disabled)
+      ).update(true)
+    )
   }
 
   def getAllShoppingLists(personId: Long): Seq[ShoppingList] = {
-    scala.concurrent.Await.result(
-        db.run((for {
+    runDbOperation(
+      ( for {
           ph <- personsHouseholds if ph.personId === personId
           h <- households if h.id === ph.householdId
           s <- shoppingLists if s.householdId === h.id
-        } yield s).result)
-        , Duration.Inf
+        } yield s
+      ).result
     )
   }
 
   def getPurchases(personId: Long): Seq[Purchase] = {
-    scala.concurrent.Await.result(
-        db.run(purchases.filter(p => p.personId === personId).result)
-        , Duration.Inf
+    runDbOperation(
+      purchases
+        .filter(p => p.personId === personId)
+        .result
     )
   }
 
   def getPurchase(id: Long): Purchase = {
-    scala.concurrent.Await.result(
-        db.run(purchases.filter(p => p.id === id).result)
-        , Duration.Inf
+    runDbOperation(
+      purchases
+        .filter(p => p.id === id)
+        .result
     )(0)
   }
 
   def setPurchase(id: Long, purchase: Purchase) = {
-    scala.concurrent.Await.result(
-        db.run(purchases.insertOrUpdate(purchase))
-        , Duration.Inf
+    runDbOperation(
+      purchases.insertOrUpdate(purchase)
     )
   }
 
   def newPurchase(userId: Long): Long = {
-    scala.concurrent.Await.result(
-        db.run((purchases returning purchases.map(_.id)) += Purchase(None, "new purchase", userId, 0, false))
-        , Duration.Inf
+    runDbOperation(
+      (purchases returning purchases.map(_.id)) += Purchase(None, "new purchase", userId, 0, false)
     )
   }
 
   def disablePurchase(id: Long) = {
-    scala.concurrent.Await.result(
-        db.run( (for { p <- purchases if p.id === id} yield (p.disabled)).update(true) )
-        , Duration.Inf
+    runDbOperation(
+      ( for 
+        { p <- purchases if p.id === id}
+        yield (p.disabled)
+      ).update(true)
     )
 
   }
 
   def setup(): Unit = { 
 
-    scala.concurrent.Await.result(
-      db.run(MTable.getTables).flatMap(tables => 
-        db.run(allSchemas.createIfNotExists)
-      )
-      , Duration.Inf
+    runDbOperation(
+      MTable
+        .getTables
+        .flatMap(
+          tables => allSchemas.createIfNotExists
+        )
     )
 
-    runDbOperation(DBIO.seq(persons.delete, households.delete, shoppingLists.delete, shoppingListItems.delete, purchases.delete))
+    runDbOperation(
+      DBIO.seq(
+        persons.delete,
+        households.delete,
+        shoppingLists.delete,
+        shoppingListItems.delete,
+        purchases.delete
+      )
+    )
   }
 }

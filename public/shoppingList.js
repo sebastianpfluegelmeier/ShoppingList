@@ -5952,8 +5952,8 @@ var elm$core$Platform$Sub$none = elm$core$Platform$Sub$batch(_List_Nil);
 var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$none;
 };
-var author$project$Main$Ignore = function (a) {
-	return {$: 'Ignore', a: a};
+var author$project$Main$LoadAfterSave = function (a) {
+	return {$: 'LoadAfterSave', a: a};
 };
 var elm$core$Elm$JsArray$foldl = _JsArray_foldl;
 var elm$core$Array$foldl = F3(
@@ -6667,7 +6667,7 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 			case 'Ignore':
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-			default:
+			case 'Save':
 				return _Utils_Tuple2(
 					model,
 					elm$http$Http$post(
@@ -6675,7 +6675,20 @@ var author$project$Main$update = F2(
 							body: elm$http$Http$jsonBody(
 								author$project$Main$shoppingListEncoder(
 									{disabled: model.disabled, householdId: model.householdId, id: model.id, list: model.list, name: model.name})),
-							expect: elm$http$Http$expectWhatever(author$project$Main$Ignore),
+							expect: elm$http$Http$expectWhatever(author$project$Main$LoadAfterSave),
+							url: elm$core$String$concat(
+								_List_fromArray(
+									[
+										'/shoppingListJson/',
+										elm$core$String$fromInt(model.id)
+									]))
+						}));
+			default:
+				return _Utils_Tuple2(
+					model,
+					elm$http$Http$get(
+						{
+							expect: A2(elm$http$Http$expectJson, author$project$Main$GotShoppingList, author$project$Main$shoppingListDecoder),
 							url: elm$core$String$concat(
 								_List_fromArray(
 									[
